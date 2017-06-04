@@ -12,7 +12,6 @@ class ANN:
         # Assign the Neuron its weights
         def assign_weights(self, weights_line):
             self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
-            print(self.weights)
 
     # Constructor simply sets meta member variables
     def __init__(self, train_dir, structure_file, weights_file, alpha, iters):
@@ -63,9 +62,6 @@ class ANN:
                         print("    w = " + str(w))
                         weights_ln += str( random.randint(mini, maxi) ) + ' '
                     all_lines.append(weights_ln)
-
-                    if l != len(self.layers):
-                        all_lines.append('')
 
         # Assign weights to each neuron
         l = 1
