@@ -1,5 +1,6 @@
 import os
 import math
+import random
 
 # Class to execute the artificial neural network
 class ANN:
@@ -10,7 +11,8 @@ class ANN:
 
         # Assign the Neuron its weights
         def assign_weights(self, weights_line):
-            self.weights = [float(w) for w in weights_line.split(' ')]
+            self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
+            print(self.weights)
 
     # Constructor simply sets meta member variables
     def __init__(self, train_dir, structure_file, weights_file, alpha, iters):
@@ -42,15 +44,29 @@ class ANN:
             file.close()
 
     # Assign all the Neurons their starting (or testing) weights
-    def assign_all_weights(self):
-        with open(self.weights_file, 'r') as file:
-            l = 1
-            n = 0
-            for line in file.read().split('\n')[:-1]:
-                if line == '' or line == '\0':
-                    l += 1
-                    n = 0
-                else:
-                    self.layers[l][n].assign_weights(line)
+    def assign_all_weights(self, mini=-10, maxi=10):
+        all_lines = []
 
-            file.close()
+        # Grab weights from file
+        if self.weights_file:
+            with open(self.weights_file, 'r') as file:
+                all_lines = file.read().split('\n')[:-1]
+                file.close()
+        # Randomize starting weights
+        else:
+            for l, layer in enumerate(self.layers[-1]):
+                for n in self.layers[l]:
+                    weights_ln = ''
+                    for w in range(len(self.layers[l+1])):
+                        weights_ln += str( float(random.randint(mini, maxi)) ) + ' '
+                    all_lines.append(weights_ln)
+
+        # Assign weights to each neuron
+        l = 1
+        n = 0
+        for line in all_lines:
+            if line == '' or line == '\0':
+                l += 1
+                n = 0
+            else:
+                self.layers[l][n].assign_weights(line)
