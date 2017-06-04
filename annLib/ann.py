@@ -40,7 +40,7 @@ class ANN:
     def build_structure(self):
         with open(self.structure_file, 'r') as file:
             layer_depths = ['1'] + file.read().split('\n')[:-1]
-            self.layers = [[ANN.Neuron() for n in l] for l in layer_depths]
+            self.layers = [[ANN.Neuron() for n in range(int(l))] for l in layer_depths]
             file.close()
 
     # Assign all the Neurons their starting (or testing) weights
@@ -54,12 +54,18 @@ class ANN:
                 file.close()
         # Randomize starting weights
         else:
-            for l, layer in enumerate(self.layers[-1]):
-                for n in self.layers[l]:
+            for l in range(len(self.layers[1:-1])):
+                print("l = " + str(l))
+                for n in self.layers[l+1]:
+                    print("  n = " + str(n))
                     weights_ln = ''
-                    for w in range(len(self.layers[l+1])):
-                        weights_ln += str( float(random.randint(mini, maxi)) ) + ' '
+                    for w in self.layers[l+2]:
+                        print("    w = " + str(w))
+                        weights_ln += str( random.randint(mini, maxi) ) + ' '
                     all_lines.append(weights_ln)
+
+                    if l != len(self.layers):
+                        all_lines.append('')
 
         # Assign weights to each neuron
         l = 1
