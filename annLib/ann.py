@@ -1,3 +1,5 @@
+import os
+
 # Class to execute the artificial neural network
 class ANN:
     # Nested class for individual neurons
@@ -18,7 +20,7 @@ class ANN:
 
     def get_num_chars(self):
         found_chars = []
-        for filename in os.listdir(train_dir):
+        for filename in os.listdir(self.train_dir):
             this_char = filename[0]
             if this_char not in found_chars:
                 found_chars.append(this_char)

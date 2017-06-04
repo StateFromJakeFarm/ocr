@@ -21,10 +21,12 @@ def main():
         help='file containing structure of ANN')
     parser.add_argument('-a', '--alpha', type=float, default=0.001,
         help='the alpha value for error propagation')
+    parser.add_argument('-i', '--iters', type=int, default=200,
+        help='number of training iterations to run on the training images')
     args = parser.parse_args()
 
     # Format the images for the ANN
-    if args.train_dir and os.path.isdir(args.train_dir):
+    if args.train_dir and os.path.isdir(args.train_dir) and args.structure:
         formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
 
         # Only remake all the images if the formatted images directory doesn't
@@ -35,13 +37,14 @@ def main():
             create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # DO ANN THINGS
-        myAnn = ANN(formatted_dir, structure_file, args.alpha, args.iters)
+        my_ann = ANN(formatted_dir, args.structure, args.alpha, args.iters)
+        my_ann.get_num_chars()
 
         # Remove the old traning images directory before creating new ones
         if not args.keep and os.path.isdir(formatted_dir):
             shutil.rmtree(formatted_dir)
     else:
-        print("ERROR: must provide name of properly-structured images directory")
+        print("ERROR: must provide name of properly-structured images directory and structure file")
 
 
 if __name__ == '__main__':
