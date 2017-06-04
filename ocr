@@ -30,7 +30,7 @@ def main():
         formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
 
         # Only remake all the images if the formatted images directory doesn't
-        # exist OR the user wants to remake all the formatted images anyway
+        # exist OR the user wants to remake all the formatted images regardless
         if args.new or not os.path.isdir(formatted_dir):
             if os.path.isdir(formatted_dir):
                 shutil.rmtree(formatted_dir)
@@ -39,6 +39,7 @@ def main():
         # DO ANN THINGS
         my_ann = ANN(formatted_dir, args.structure, args.alpha, args.iters)
         my_ann.get_num_chars()
+        my_ann.build_structure()
 
         # Remove the old traning images directory before creating new ones
         if not args.keep and os.path.isdir(formatted_dir):

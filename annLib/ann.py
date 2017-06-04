@@ -4,8 +4,8 @@ import os
 class ANN:
     # Nested class for individual neurons
     class Neuron:
-        def __init__(self, weights):
-            self.weights = weights[:]
+        def __init__(self):
+            self.weights = []
 
     # Constructor simply sets meta member variables
     def __init__(self, train_dir, structure_file, alpha, iters):
@@ -16,8 +16,9 @@ class ANN:
 
         # Members set internally
         self.num_chars = 0
-        self.neurons = []
+        self.layers = []
 
+    # Get the number of characters we are training on
     def get_num_chars(self):
         found_chars = []
         for filename in os.listdir(self.train_dir):
@@ -26,3 +27,10 @@ class ANN:
                 found_chars.append(this_char)
 
         self.num_chars = len(found_chars)
+
+    # Construct the Neuron web based on the structure file
+    def build_structure(self):
+        with open(self.structure_file, 'r') as file:
+            layer_depths = file.read().split('\n')
+            layers = [[ANN.Neuron() for n in l] for l in layer_depths[:-1]]
+            print(repr(layers))
