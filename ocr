@@ -11,12 +11,16 @@ def main():
     parser = argparse.ArgumentParser(prog='ocr')
     parser.add_argument('-t', '--train_dir', type=str, default=None,
         help='train OCR on the images in a properly-structured directory of character images')
-    parser.add_argument('-s', '--side', type=int, default=10,
+    parser.add_argument('-d', '--dimension', type=int, default=10,
         help='length of side of converted bmp image (default is 10)')
     parser.add_argument('-k', '--keep', action='store_true', default=True,
         help='flag to set whether or not to keep converted training/testing images (default is True)')
     parser.add_argument('-n', '--new', action='store_true',
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
+    parser.add_argument('-s', '--structure', type=str, default=None,
+        help='file containing structure of ANN')
+    parser.add_argument('-a', '--alpha', type=float, default=0.001,
+        help='the alpha value for error propagation')
     args = parser.parse_args()
 
     # Format the images for the ANN
@@ -28,10 +32,10 @@ def main():
         if args.new or not os.path.isdir(formatted_dir):
             if os.path.isdir(formatted_dir):
                 shutil.rmtree(formatted_dir)
-
-            create_formatted(args.train_dir, formatted_dir, args.side)
+            create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # DO ANN THINGS
+        myAnn = ANN(formatted_dir, structure_file, args.alpha, args.iters)
 
         # Remove the old traning images directory before creating new ones
         if not args.keep and os.path.isdir(formatted_dir):

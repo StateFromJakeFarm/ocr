@@ -12,8 +12,9 @@ class ANN:
         self.alpha = alpha
         self.iters = iters
 
-        # Set by later functions
+        # Members set internally
         self.num_chars = 0
+        self.neurons = []
 
     def get_num_chars(self):
         found_chars = []
