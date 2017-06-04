@@ -77,8 +77,8 @@ def make_char_square(path, newPath, sideLen, highLo=None):
     img = img.crop(tuple(bounds)).resize((sideLen,sideLen), Image.LANCZOS)
     img.convert('RGB').save(newPath)
 
-def create_bmps(rawFolder, bmpFolder, sideLen):
-    """Convert test images to bitmaps"""
+def create_formatted(rawFolder, bmpFolder, sideLen):
+    """Convert images of characters to properly-formatted images"""
     clear_folder(bmpFolder)
 
     for char in listdir(rawFolder):
