@@ -19,6 +19,8 @@ def main():
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
     parser.add_argument('-s', '--structure', type=str, default=None,
         help='file containing structure of ANN')
+    parser.add_argument('-w', '--weights', type=str, default=None,
+        help='file containing ANN\'s starting weights (default is start with random weights)')
     parser.add_argument('-a', '--alpha', type=float, default=0.001,
         help='the alpha value for error propagation')
     parser.add_argument('-i', '--iters', type=int, default=200,
@@ -37,7 +39,7 @@ def main():
             create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # DO ANN THINGS
-        my_ann = ANN(formatted_dir, args.structure, args.alpha, args.iters)
+        my_ann = ANN(formatted_dir, args.structure, args.weights, args.alpha, args.iters)
         my_ann.get_num_chars()
         my_ann.build_structure()
 

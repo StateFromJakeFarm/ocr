@@ -7,10 +7,15 @@ class ANN:
         def __init__(self):
             self.weights = []
 
+        # Assign the Neuron its weights
+        def assign_weights(self, my_weights):
+            pass
+
     # Constructor simply sets meta member variables
-    def __init__(self, train_dir, structure_file, alpha, iters):
+    def __init__(self, train_dir, structure_file, weights_file, alpha, iters):
         self.train_dir = train_dir
         self.structure_file = structure_file
+        self.weights_file = weights_file
         self.alpha = alpha
         self.iters = iters
 
@@ -31,5 +36,10 @@ class ANN:
     # Construct the Neuron web based on the structure file
     def build_structure(self):
         with open(self.structure_file, 'r') as file:
-            layer_depths = file.read().split('\n')
-            layers = [[ANN.Neuron() for n in l] for l in layer_depths[:-1]]
+            layer_depths = file.read().split('\n')[:-1]
+            layers = [[ANN.Neuron() for n in l] for l in layer_depths]
+            print(repr(layers))
+
+    # Assign all the Neurons their starting (or testing) weights
+    def assign_all_weights(self):
+        pass
