@@ -37,14 +37,14 @@ class ANN:
     # Construct the Neuron web based on the structure file
     def build_structure(self):
         with open(self.structure_file, 'r') as file:
-            layer_depths = file.read().split('\n')[:-1]
+            layer_depths = ['1'] + file.read().split('\n')[:-1]
             self.layers = [[ANN.Neuron() for n in l] for l in layer_depths]
             file.close()
 
     # Assign all the Neurons their starting (or testing) weights
     def assign_all_weights(self):
         with open(self.weights_file, 'r') as file:
-            l = 0
+            l = 1
             n = 0
             for line in file.read().split('\n')[:-1]:
                 if line == '' or line == '\0':
