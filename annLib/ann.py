@@ -43,9 +43,15 @@ class ANN:
             file.close()
 
     # Assign all the Neurons their starting (or testing) weights
-    def assign_all_weights(self, mini=-10, maxi=10):
-        all_lines = []
+    def assign_all_weights(self, dummy=0.01, mini=-10, maxi=10):
+        # Set all dummy neuron weights and use 2-d list to store weights
+        for l in range(len(self.layers[1:])):
+            this_layer_weights = []
+            for n in range(len(self.layers[l+1])):
+                this_layer_weights.append(dummy)
+            self.layers[0][0].weights.append(this_layer_weights)
 
+        all_lines = []
         # Grab weights from file
         if self.weights_file:
             with open(self.weights_file, 'r') as file:
@@ -54,12 +60,9 @@ class ANN:
         # Randomize starting weights
         else:
             for l in range(len(self.layers[1:-1])):
-                print("l = " + str(l))
                 for n in self.layers[l+1]:
-                    print("  n = " + str(n))
                     weights_ln = ''
                     for w in self.layers[l+2]:
-                        print("    w = " + str(w))
                         weights_ln += str( random.randint(mini, maxi) ) + ' '
                     all_lines.append(weights_ln)
 
