@@ -1,4 +1,5 @@
 import os
+import math
 
 # Class to execute the artificial neural network
 class ANN:
@@ -8,8 +9,8 @@ class ANN:
             self.weights = []
 
         # Assign the Neuron its weights
-        def assign_weights(self, my_weights):
-            pass
+        def assign_weights(self, weights_line):
+            self.weights = [float(w) for w in weights_line.split(' ')]
 
     # Constructor simply sets meta member variables
     def __init__(self, train_dir, structure_file, weights_file, alpha, iters):
@@ -37,9 +38,19 @@ class ANN:
     def build_structure(self):
         with open(self.structure_file, 'r') as file:
             layer_depths = file.read().split('\n')[:-1]
-            layers = [[ANN.Neuron() for n in l] for l in layer_depths]
-            print(repr(layers))
+            self.layers = [[ANN.Neuron() for n in l] for l in layer_depths]
+            file.close()
 
     # Assign all the Neurons their starting (or testing) weights
     def assign_all_weights(self):
-        pass
+        with open(self.weights_file, 'r') as file:
+            l = 0
+            n = 0
+            for line in file.read().split('\n')[:-1]:
+                if line == '' or line == '\0':
+                    l += 1
+                    n = 0
+                else:
+                    self.layers[l][n].assign_weights(line)
+
+            file.close()
