@@ -8,7 +8,7 @@ import subprocess
 import shutil
 import glob
 
-def toSquare(path, newPath, sideLen, highLo=None):
+def makeCharSquare(path, newPath, sideLen, highLo=None):
     """Crop image to character and save as square bitmap"""
     img = None
     if type(path) is str:
@@ -87,7 +87,7 @@ def createBmps(rawFolder, bmpFolder, sideLen):
             rawPath = os.path.join(rawFolder, char, f)
             bmpPath = os.path.join(bmpFolder, char+str(i)+'.bmp')
             print(rawPath + ' --(' + str(sideLen) + ',' + str(sideLen) + ')-> ' + bmpPath)
-            toSquare(rawPath, bmpPath, sideLen)
+            makeCharSquare(rawPath, bmpPath, sideLen)
             i += 1
 
 def fullImgBmp(rawPath, bmpFolder, sideLen, highLo):
@@ -121,7 +121,7 @@ def fullImgBmp(rawPath, bmpFolder, sideLen, highLo):
 
         if bounds[0] != -1 and not sawChar:
             i += 1
-            toSquare(img.crop(tuple(bounds)), os.path.join(bmpFolder, str(i) + '.bmp'), sideLen)
+            makeCharSquare(img.crop(tuple(bounds)), os.path.join(bmpFolder, str(i) + '.bmp'), sideLen)
             bounds = [-1,0,imgX,imgY]
 
 def clearFolder(folderPath):
