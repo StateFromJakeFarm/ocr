@@ -9,12 +9,12 @@ def main():
     # Parse command line args
     parser = argparse.ArgumentParser(prog='ocr')
     parser.add_argument('-t', '--train_dir', type=str, default=None,
-        help='properly format images in the given directory for the ANN to train')
+        help='train OCR on the images in a properly-structured directory of character images')
     parser.add_argument('-s', '--side', type=int, default=10,
         help='length of side of converted bmp image (default is 10)')
-    parser.add_argument('-k', '--keep', type=bool, default=False,
+    parser.add_argument('-k', '--keep', action='store_true',
         help='flag to set whether or not to keep converted training/testing images (default is False)')
-    parser.add_argument('-n', '--new', type=bool, default=False,
+    parser.add_argument('-n', '--new', action='store_true',
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
     args = parser.parse_args()
 
@@ -25,7 +25,10 @@ def main():
         # Only remake all the images if the formatted images directory doesn't
         # exist OR the user wants to remake all the formatted images anyway
         if args.new or not os.path.isdir(formatted_dir):
-        create_bmps(args.train_dir, formatted_dir, args.side)
+            if os.path.isdir(formatted_dir):
+                shutil.rmtree(formatted_dir)
+
+            create_bmps(args.train_dir, formatted_dir, args.side)
 
         # DO ANN THINGS
 
