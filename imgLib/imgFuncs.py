@@ -8,7 +8,7 @@ import subprocess
 import shutil
 import glob
 
-def makeCharSquare(path, newPath, sideLen, highLo=None):
+def make_char_square(path, newPath, sideLen, highLo=None):
     """Crop image to character and save as square bitmap"""
     img = None
     if type(path) is str:
@@ -77,9 +77,9 @@ def makeCharSquare(path, newPath, sideLen, highLo=None):
     img = img.crop(tuple(bounds)).resize((sideLen,sideLen), Image.LANCZOS)
     img.convert('RGB').save(newPath)
 
-def createBmps(rawFolder, bmpFolder, sideLen):
+def create_bmps(rawFolder, bmpFolder, sideLen):
     """Convert test images to bitmaps"""
-    clearFolder(bmpFolder)
+    clear_folder(bmpFolder)
 
     for char in listdir(rawFolder):
         i = 0
@@ -87,11 +87,11 @@ def createBmps(rawFolder, bmpFolder, sideLen):
             rawPath = os.path.join(rawFolder, char, f)
             bmpPath = os.path.join(bmpFolder, char+str(i)+'.bmp')
             print(rawPath + ' --(' + str(sideLen) + ',' + str(sideLen) + ')-> ' + bmpPath)
-            makeCharSquare(rawPath, bmpPath, sideLen)
+            make_char_square(rawPath, bmpPath, sideLen)
             i += 1
 
 def fullImgBmp(rawPath, bmpFolder, sideLen, highLo):
-    clearFolder(bmpFolder)
+    clear_folder(bmpFolder)
 
     img = Image.open(rawPath).convert('L')
     imgX, imgY = img.size
@@ -121,15 +121,15 @@ def fullImgBmp(rawPath, bmpFolder, sideLen, highLo):
 
         if bounds[0] != -1 and not sawChar:
             i += 1
-            makeCharSquare(img.crop(tuple(bounds)), os.path.join(bmpFolder, str(i) + '.bmp'), sideLen)
+            make_char_square(img.crop(tuple(bounds)), os.path.join(bmpFolder, str(i) + '.bmp'), sideLen)
             bounds = [-1,0,imgX,imgY]
 
-def clearFolder(folderPath):
+def clear_folder(folderPath):
     if os.path.isdir(folderPath):
         shutil.rmtree(folderPath)
     os.makedirs(folderPath)
 
-def runANN(argsList, giveString=False):
+def run_ann(argsList, giveString=False):
     ann = subprocess.Popen(argsList, stdout=subprocess.PIPE)
     outStr = ''
     curStr = ''

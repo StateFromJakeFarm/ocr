@@ -19,7 +19,7 @@ def main():
     # Format the images for the ANN
     if args.dir and os.path.isdir(args.dir):
         trainDir = args.dir + 'Trainable'
-        createBmps(args.dir, trainDir, args.side)
+        create_bmps(args.dir, trainDir, args.side)
 
         # Remove the old traning images directory before creating new ones
         if args.delete and os.path.isdir(trainDir):
