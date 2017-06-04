@@ -33,4 +33,3 @@ class ANN:
         with open(self.structure_file, 'r') as file:
             layer_depths = file.read().split('\n')
             layers = [[ANN.Neuron() for n in l] for l in layer_depths[:-1]]
-            print(repr(layers))
