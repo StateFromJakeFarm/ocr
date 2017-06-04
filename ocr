@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from imgFuncs import *
+from imgLib.imgFuncs import *
 import os
 import sys
 import argparse
@@ -8,26 +8,24 @@ import argparse
 def main():
     # Parse command line args
     parser = argparse.ArgumentParser(prog='ocr')
-    parser.add_argument('--dir', type=str, default=None,
+    parser.add_argument('-t', '--train_dir', type=str, default=None,
         help='properly format images in the given directory for the ANN to train')
-    parser.add_argument('--side', type=int, default=10,
+    parser.add_argument('-s', '--side', type=int, default=10,
         help='length of side of converted bmp image (default is 10)')
-    parser.add_argument('--delete', type=bool, default=False,
-        help='delete the "<images directory>Bmps" directory instead of making another')
+    parser.add_argument('-k', '--keep', type=bool, default=False,
+        help='flag to set whether or not to keep converted training/testing images (default is False)')
     args = parser.parse_args()
 
     # Format the images for the ANN
-    if args.dir and os.path.isdir(args.dir):
-        trainDir = args.dir + 'Trainable'
-        create_bmps(args.dir, trainDir, args.side)
+    if args.train_dir and os.path.isdir(args.train_dir):
+        formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
+        create_bmps(args.train_dir, formatted_dir, args.side)
 
         # Remove the old traning images directory before creating new ones
-        if args.delete and os.path.isdir(trainDir):
-            shutil.rmtree(trainDir)
-        else:
+        if not args.keep and os.path.isdir(formatted_dir):
+            shutil.rmtree(formatted_dir)
     else:
         print("ERROR: must provide name of properly-structured images directory")
-        exit(1)
 
 
 if __name__ == '__main__':
