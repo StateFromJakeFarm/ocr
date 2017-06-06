@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-from imgLib.imgFuncs import *
-from annLib.ann import *
+from imgFuncs import *
+from ann import *
 import os
 import sys
 import argparse
