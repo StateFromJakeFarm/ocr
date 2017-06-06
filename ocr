@@ -39,7 +39,7 @@ def main():
             create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # DO ANN THINGS
-        my_ann = ANN(formatted_dir, args.structure, args.weights, args.alpha, args.iters)
+        my_ann = ANN(formatted_dir, args.structure, args.alpha, args.iters)
         my_ann.get_num_chars()
         my_ann.build()
 
