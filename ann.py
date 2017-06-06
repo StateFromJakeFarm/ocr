@@ -12,7 +12,6 @@ class ANN:
         def assign_weights(self, weights_line):
             """Assign the Neuron its weights"""
             self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
-            print(self.weights)
 
     def __init__(self, train_dir, structure_file, alpha, iters):
         """Constructor simply sets meta member variables"""
@@ -71,17 +70,14 @@ class ANN:
                 this_layer_weights.append(dummies[i])
                 i += 1
             self.layers[0][0].weights.append(this_layer_weights)
-        print(self.layers[0][0].weights)
 
         # Assign weights to every other neuron
-        l = 1
-        n = 0
-        for line in all_lines:
-            if line == '' or line == '\0':
-                l += 1
-                n = 0
-            else:
-                self.layers[l][n].assign_weights(line)
+        i = 0
+        for l in self.layers[1:]:
+            for n in l:
+                n.assign_weights(all_lines[i])
+                i += 1
+            
 
     def build(self):
         """Construct the network and load weights (if any)"""
@@ -90,11 +86,39 @@ class ANN:
             self.assign_all_weights(file)
             file.close()
 
-    def save_network(self):
+    def save(self, f_name=''):
         """Save the structure and learned weights for this network"""
-        f_name = ''
         while f_name == '':
             f_name = raw_input('Enter save file name: ')
 
         with open(f_name, 'w') as file:
+            # Save structure
+            for l in range(len(self.layers[1:])):
+                file.write( str(len(self.layers[l+1])) + ' ' )
+            file.write('\n')
+
+            # Save dummy neuron weights
+            for l in self.layers[0][0].weights:
+                for w in l:
+                    file.write( str(w) + ' ' )
+            file.write('\n')
+
+            # Save all other neuron weights
+            for l in self.layers[1:]:
+                for n in l:
+                    file.write( ' '.join(n.weights) + '\n' )
             file.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
