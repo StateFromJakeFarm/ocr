@@ -73,7 +73,7 @@ class ANN:
 
         # Assign weights to every other neuron
         i = 0
-        for l in self.layers[1:]:
+        for l in self.layers[1:-1]:
             for n in l:
                 n.assign_weights(all_lines[i])
                 i += 1
@@ -104,13 +104,12 @@ class ANN:
             file.write('\n')
 
             # Save all other neuron weights
-            print(self.layers)
-            for l in range(len(self.layers[:-1])):
-                for n in self.layers[l+1]:
+            for l in self.layers[1:-1]:
+                for n in l:
                     file.write( ' '.join(map(str, n.weights)) + '\n' )
             file.close()
 
     def print_weights(self):
-        for l in self.layers:
+        for l in self.layers[:-1]:
             for n in l:
                 print(n.weights)
