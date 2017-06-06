@@ -52,7 +52,7 @@ class ANN:
         all_lines = file.read().split('\n')[:-1]
 
         # Randomize starting weights if file does not specify weights
-        if len(all_lines) > 0:
+        if len(all_lines) <= 0:
             for l in range(len(self.layers[1:-1])):
                 for n in self.layers[l+1]:
                     weights_ln = ''
