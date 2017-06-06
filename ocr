@@ -41,8 +41,7 @@ def main():
         # DO ANN THINGS
         my_ann = ANN(formatted_dir, args.structure, args.weights, args.alpha, args.iters)
         my_ann.get_num_chars()
-        my_ann.build_structure()
-        my_ann.assign_all_weights()
+        my_ann.build()
 
         # Remove the old traning images directory before creating new ones
         if not args.keep and os.path.isdir(formatted_dir):
