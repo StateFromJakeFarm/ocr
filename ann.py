@@ -106,19 +106,5 @@ class ANN:
             # Save all other neuron weights
             for l in self.layers[1:]:
                 for n in l:
-                    file.write( ' '.join(n.weights) + '\n' )
+                    file.write( ' '.join(map(str, n.weights)) + '\n' )
             file.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
