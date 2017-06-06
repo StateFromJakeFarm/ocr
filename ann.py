@@ -36,7 +36,7 @@ class ANN:
 
     def build_structure(self, file):
         """Construct the Neuron web based on the structure file"""
-        layer_depths = ['1'] + file.readline().strip('\n').split(' ')
+        layer_depths = ['1'] + file.readline().strip(' \n').split(' ')
         self.layers = [[ANN.Neuron() for n in range(int(l))] for l in layer_depths]
 
     def assign_all_weights(self, file, dummy=0.01, mini=-0.5, maxi=0.5):
@@ -104,7 +104,13 @@ class ANN:
             file.write('\n')
 
             # Save all other neuron weights
-            for l in self.layers[1:]:
-                for n in l:
+            print(self.layers)
+            for l in range(len(self.layers[:-1])):
+                for n in self.layers[l+1]:
                     file.write( ' '.join(map(str, n.weights)) + '\n' )
             file.close()
+
+    def print_weights(self):
+        for l in self.layers:
+            for n in l:
+                print(n.weights)
