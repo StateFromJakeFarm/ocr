@@ -12,6 +12,7 @@ class ANN:
         def assign_weights(self, weights_line):
             """Assign the Neuron its weights"""
             self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
+            print(self.weights)
 
     def __init__(self, train_dir, structure_file, alpha, iters):
         """Constructor simply sets meta member variables"""
@@ -46,6 +47,7 @@ class ANN:
 
         # Hold values for dummy neuron
         dummies = []
+        self.print_weights()    
 
         # Randomize starting weights if file does not specify weights
         if len(all_lines) <= 0:
@@ -73,11 +75,12 @@ class ANN:
 
         # Assign weights to every other neuron
         i = 0
+        print all_lines    
         for l in self.layers[1:-1]:
             for n in l:
+                print i
                 n.assign_weights(all_lines[i])
                 i += 1
-            
 
     def build(self):
         """Construct the network and load weights (if any)"""
@@ -110,6 +113,7 @@ class ANN:
             file.close()
 
     def print_weights(self):
-        for l in self.layers[:-1]:
+        for l in self.layers:
+            print len(l)
             for n in l:
                 print(n.weights)
