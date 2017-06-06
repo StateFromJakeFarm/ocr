@@ -12,6 +12,7 @@ class ANN:
         def assign_weights(self, weights_line):
             """Assign the Neuron its weights"""
             self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
+            print(self.weights)
 
     def __init__(self, train_dir, structure_file, alpha, iters):
         """Constructor simply sets meta member variables"""
@@ -41,15 +42,11 @@ class ANN:
 
     def assign_all_weights(self, file, dummy=0.01, mini=-0.5, maxi=0.5):
         """Assign all the Neurons their starting (or testing) weights"""
-        # Set all dummy neuron weights and use 2-d list to store weights
-        for l in range(len(self.layers[1:])):
-            this_layer_weights = []
-            for n in range(len(self.layers[l+1])):
-                this_layer_weights.append(dummy)
-            self.layers[0][0].weights.append(this_layer_weights)
-
         # Attempt to grab weights from file
         all_lines = file.read().split('\n')[:-1]
+
+        # Hold values for dummy neuron
+        dummies = []
 
         # Randomize starting weights if file does not specify weights
         if len(all_lines) <= 0:
@@ -59,8 +56,24 @@ class ANN:
                     for w in self.layers[l+2]:
                         weights_ln += str( random.uniform(mini, maxi) ) + ' '
                     all_lines.append(weights_ln)
+        # Grab the dummy neuron's saved weights
+        else:
+            dummies = all_lines[0].split(' ')
 
-        # Assign weights to each neuron
+        # Set all dummy neuron weights and use 2-d list to store weights
+        i = 0
+        for l in range(len(self.layers[1:])):
+            this_layer_weights = []
+            for n in range(len(self.layers[l+1])):
+                # Use passed dummy neuron value if we aren't loading a network
+                if len(dummies) == i:
+                    dummies += [dummy]
+                this_layer_weights.append(dummies[i])
+                i += 1
+            self.layers[0][0].weights.append(this_layer_weights)
+        print(self.layers[0][0].weights)
+
+        # Assign weights to every other neuron
         l = 1
         n = 0
         for line in all_lines:
@@ -79,4 +92,9 @@ class ANN:
 
     def save_network(self):
         """Save the structure and learned weights for this network"""
-        pass
+        f_name = ''
+        while f_name == '':
+            f_name = raw_input('Enter save file name: ')
+
+        with open(f_name, 'w') as file:
+            file.close()
