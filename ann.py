@@ -108,8 +108,10 @@ class ANN:
                     file.write( ' '.join(map(str, n.weights)) + '\n' )
             file.close()
 
-    def print_weights(self):
-        for l in self.layers:
-            print len(l)
-            for n in l:
-                print(n.weights)
+    def backpropagate(self):
+        """Run main backpropagation algorithm for training"""
+        pass
+
+    def get_grayscale_inputs(self, image_f_name):
+        """Retrieve all grayscale pixel values"""
+        pass
