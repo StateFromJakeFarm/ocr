@@ -90,7 +90,8 @@ def create_formatted(rawFolder, bmpFolder, sideLen):
             make_char_square(rawPath, bmpPath, sideLen)
             i += 1
 
-def fullImgBmp(rawPath, bmpFolder, sideLen, highLo):
+def full_img_bmp(rawPath, bmpFolder, sideLen, highLo):
+    """???"""
     clear_folder(bmpFolder)
 
     img = Image.open(rawPath).convert('L')
@@ -124,29 +125,8 @@ def fullImgBmp(rawPath, bmpFolder, sideLen, highLo):
             make_char_square(img.crop(tuple(bounds)), os.path.join(bmpFolder, str(i) + '.bmp'), sideLen)
             bounds = [-1,0,imgX,imgY]
 
-def clear_folder(folderPath):
-    if os.path.isdir(folderPath):
-        shutil.rmtree(folderPath)
-    os.makedirs(folderPath)
-
-def run_ann(argsList, giveString=False):
-    ann = subprocess.Popen(argsList, stdout=subprocess.PIPE)
-    outStr = ''
-    curStr = ''
-    while True:
-        out = ann.stdout.read(1)
-        if out == '' and ann.poll() != None:
-            break
-        if out != '':
-            if giveString:
-                if str(out) == '\n' or str(out) == '\0':
-                    if len(curStr) == 1:
-                        outStr += str(curStr)
-                    curStr = ''
-                else:
-                    curStr += str(out)
-            else:
-                sys.stdout.write(out)
-                sys.stdout.flush()
-
-    return outStr
+def get_grayscale_vals(img_file_path):
+    img = Image.open(img_file_path).convert('L')
+    grayscale_vals = [int(x) for x in list(img.getdata())]
+    img.close()
+    return grayscale_vals

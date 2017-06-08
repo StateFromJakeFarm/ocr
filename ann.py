@@ -1,6 +1,7 @@
 import os
 import math
 import random
+from imgFuncs import get_grayscale_vals
 
 class ANN:
     """Class to execute the artificial neural network"""
@@ -110,8 +111,9 @@ class ANN:
 
     def backpropagate(self):
         """Run main backpropagation algorithm for training"""
-        pass
-
-    def get_grayscale_inputs(self, image_f_name):
-        """Retrieve all grayscale pixel values"""
-        pass
+        # Run for specified number of iterations
+        for k in range(self.iters):
+            all_files = os.listdir(self.train_dir)
+            random.shuffle(all_files)
+            for img_file in all_files:
+                print(get_grayscale_vals(self.train_dir + '/' + img_file))
