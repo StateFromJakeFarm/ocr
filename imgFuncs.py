@@ -1,7 +1,6 @@
-#!/usr/bin/python
-
 from PIL import Image
 from os import listdir
+from basicFuncs import clear_folder
 import os
 import sys
 import subprocess

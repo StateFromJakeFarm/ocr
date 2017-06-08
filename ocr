@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from imgFuncs import *
+from basicFuncs import *
 from ann import *
 import os
 import sys
