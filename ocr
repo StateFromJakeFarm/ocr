@@ -42,7 +42,9 @@ def main():
         my_ann = ANN(formatted_dir, args.structure, args.alpha, args.iters)
         my_ann.get_num_chars()
         my_ann.build()
-        my_ann.save()
+
+        if raw_input('Save ANN? [y/n]: ') in ['y', 'Y']:
+            my_ann.save()
 
         # Remove the old traning images directory before creating new ones
         if not args.keep and os.path.isdir(formatted_dir):
