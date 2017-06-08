@@ -9,6 +9,7 @@ class ANN:
         """Nested class for individual neurons"""
         def __init__(self):
             self.weights = []
+            self.a = 0
 
         def assign_weights(self, weights_line):
             """Assign the Neuron its weights"""
@@ -115,5 +116,24 @@ class ANN:
         for k in range(self.iters):
             all_files = os.listdir(self.train_dir)
             random.shuffle(all_files)
+            # Randomize order of inputs
             for img_file in all_files:
-                print(get_grayscale_vals(self.train_dir + '/' + img_file))
+
+                # Use image grayscale values as inputs for first layer
+                for i, in_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
+                    self.layers[1][i].a = in_val
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
