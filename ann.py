@@ -21,6 +21,7 @@ class ANN:
         self.structure_file = structure_file
         self.alpha = alpha
         self.iters = iters
+        self.encodings = {}
 
         # Members set internally
         self.num_chars = 0
@@ -85,12 +86,13 @@ class ANN:
         with open(self.structure_file, 'r') as file:
             self.build_structure(file)
             self.assign_all_weights(file)
+            self.assign_encodings()
             file.close()
 
     def save(self, f_name=''):
         """Save the structure and learned weights for this network"""
         while f_name == '':
-            f_name = raw_input('Enter save file name: ')
+            f_name = input('Enter save file name: ')
 
         with open(f_name, 'w') as file:
             # Save structure
@@ -110,30 +112,31 @@ class ANN:
                     file.write( ' '.join(map(str, n.weights)) + '\n' )
             file.close()
 
+    def assign_encodings(self):
+        """Create unique encodings for all characters based on number of output nodes"""
+        # VERY basic right now...
+        for char in range(self.num_chars):
+            self.encodings[char] = []
+            for n in range(len(self.layers[-1])):
+                val = 0.1
+                if char == n:
+                    val = 0.9
+
+                self.encodings[char].append(val)
+
     def backpropagate(self):
         """Run main backpropagation algorithm for training"""
         # Run for specified number of iterations
+        all_files = os.listdir(self.train_dir)
         for k in range(self.iters):
-            all_files = os.listdir(self.train_dir)
+            print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
             random.shuffle(all_files)
             # Randomize order of inputs
-            for img_file in all_files:
+            for i, img_file in enumerate(all_files):
 
                 # Use image grayscale values as inputs for first layer
                 for i, in_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
                     self.layers[1][i].a = in_val
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # Clear terminal
+        print()

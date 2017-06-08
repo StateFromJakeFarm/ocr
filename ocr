@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from imgFuncs import *
 from ann import *
@@ -44,7 +44,7 @@ def main():
         my_ann.build()
         my_ann.backpropagate()
 
-        if raw_input('Save ANN? [y/n]: ') in ['y', 'Y']:
+        if input('Save ANN? [y/n]: ') in ['y', 'Y']:
             my_ann.save()
 
         # Remove the old traning images directory before creating new ones
