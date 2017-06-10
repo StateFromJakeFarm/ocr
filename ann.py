@@ -95,7 +95,10 @@ class ANN:
     def save(self, f_name=''):
         """Save the structure and learned weights for this network"""
         while f_name == '':
-            f_name = input('Enter save file name: ')
+            f_name = input('Enter save file name ([N/n] to exit): ')
+
+        if f_name in ['N', 'n']:
+            return
 
         with open(f_name, 'w') as file:
             # Save structure
@@ -196,26 +199,3 @@ class ANN:
 
         # Clear terminal line
         print()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
