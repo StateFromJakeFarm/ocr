@@ -135,7 +135,7 @@ class ANN:
         # Run for specified number of iterations
         all_files = os.listdir(self.train_dir)
         for k in range(self.iters):
-            print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
+#            print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
             random.shuffle(all_files)
             # Randomize order of inputs
 #            for i, img_file in enumerate(all_files):
@@ -158,9 +158,9 @@ class ANN:
                         in_sum = self.layers[0][0].weights[l][n]
 
                         # Add weight * activation for all neurons in previous layer
-                        for p in range(len(self.layers[l-1])):
-                            weight_to_current = self.layers[l-1][p].weights[n]
-                            prev_activation   = self.layers[l-1][p].a
+                        for prev in self.layers[l-1]:
+                            weight_to_current = prev.weights[n]
+                            prev_activation   = prev.a
 
                             in_sum += prev_activation * weight_to_current
 
@@ -170,9 +170,19 @@ class ANN:
                 # Only update weights if training
                 if train:
                     # Calculate output layer errors (4)
-                    for n, neuron in enumerate(self.layers[-1]):
-                        neuron.err = neuron.a * (1 - neuron.a) * (expected_outputs[n] - neuron.a)
-                        print(neuron.err)
+                    for n, current_neuron in enumerate(self.layers[-1]):
+                        current_neuron.err = current_neuron.a * (1 - current_neuron.a) * (expected_outputs[n] - current_neuron.a)
+
+                    # Calculate errors for all other neurons (5, 6)
+                    for l, current_layer in enumerate(reversed(self.layers[1:-1])):
+                        print(l)
+                        for current_neuron in current_layer:
+                            err_sum = 0
+                            for f, further_neuron in enumerate(self.layers[l+1]):
+                                err_sum += further_neuron.err * current_neuron.weights[f]
+
+                            current_neuron.err = current_neuron.a * (1 - current_neuron.a) * err_sum
+                            print(current_neuron.err)
 
         # Clear terminal line
         print()
