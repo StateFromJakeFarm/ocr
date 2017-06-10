@@ -18,7 +18,7 @@ def main():
         help='flag to set whether or not to keep converted training/testing images (default is True)')
     parser.add_argument('-n', '--new', action='store_true',
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
-    parser.add_argument('-s', '--save_file', type=str, default=None,
+    parser.add_argument('-l', '--load', type=str, default=None,
         help='file containing saved ANN or simply the structure to be trained')
     parser.add_argument('-a', '--alpha', type=float, default=0.0001,
         help='the alpha value for error propagation')
@@ -29,7 +29,7 @@ def main():
     args = parser.parse_args()
 
     # Format the images for the ANN
-    if (args.train_dir and os.path.isdir(args.train_dir) and args.save_file) or args.save_file:
+    if (args.train_dir and os.path.isdir(args.train_dir) and args.load) or args.load:
         formatted_dir = None
         if args.train_dir:
             formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
@@ -42,7 +42,7 @@ def main():
                 create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # Construct the OCR ANN
-        my_ann = ANN(formatted_dir, args.classify, args.save_file, args.alpha, args.iters)
+        my_ann = ANN(formatted_dir, args.classify, args.load, args.alpha, args.iters)
         my_ann.build()
 
         # Train if we have a training directory

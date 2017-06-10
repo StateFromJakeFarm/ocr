@@ -2,7 +2,6 @@ import os
 import math
 import random
 import shutil
-from PIL import Image
 from imgFuncs import get_grayscale_vals, find_chars
 
 class ANN:
@@ -36,6 +35,7 @@ class ANN:
         # Load characters from file
         all_chars = []
         if self.train_dir:
+            file.readline()
             all_chars = [f_name[0] for f_name in os.listdir(self.train_dir)] 
         # Find unique characters in training directory
         else:
@@ -256,22 +256,3 @@ class ANN:
 
             # Clear line
             print()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
