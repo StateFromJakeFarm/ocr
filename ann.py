@@ -43,6 +43,9 @@ class ANN:
         layer_depths = ['1'] + file.readline().strip(' \n').split(' ')
         self.layers = [[ANN.Neuron() for n in range(int(l))] for l in layer_depths]
 
+        # Dummy neuron always has activation value of 1
+        self.layers[0][0].a = 1
+
     def assign_all_weights(self, file, dummy=0.01, mini=-0.5, maxi=0.5):
         """Assign all the Neurons their starting (or testing) weights"""
         # Attempt to grab weights from file
@@ -135,20 +138,14 @@ class ANN:
         # Run for specified number of iterations
         all_files = os.listdir(self.train_dir)
         for k in range(self.iters):
-#            print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
+            print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
             random.shuffle(all_files)
             # Randomize order of inputs
-#            for i, img_file in enumerate(all_files):
-            for i, img_file in enumerate([1]):
-
+            for i, img_file in enumerate(all_files):
                 # Use image grayscale values as activation values for first layer (1)
-#                expected_outputs = get_grayscale_vals(self.train_dir + '/' + img_file)
-#                for i, pix_val in enumerate(expected_outputs):
-                testlist = [0.11, 0.11]
-                expected_outputs = [0.9, 0.1]
-                for i, pix_val in enumerate(testlist):
-#                    self.layers[1][i].a = pix_val / 255.0
-                    self.layers[1][i].a = pix_val
+                expected_outputs = get_grayscale_vals(self.train_dir + '/' + img_file)
+                for i, pix_val in enumerate(expected_outputs):
+                    self.layers[1][i].a = pix_val / 255.0
 
                 # Calculate activation values for all other neurons (2, 3)
                 for l, current_layer in enumerate(self.layers[2:]):
@@ -184,7 +181,19 @@ class ANN:
                                 err_sum += further_neuron.err * current_neuron.weights[f]
 
                             current_neuron.err = current_neuron.a * (1 - current_neuron.a) * err_sum
-                            print(current_neuron.err)
+
+                    # Update weights (7)
+                    for l, current_layer in enumerate(self.layers[1:]):
+                        for current_neuron in current_layer:
+                            for w in range(len(current_neuron.weights)):
+                                current_neuron.weights[w] = current_neuron.weights[w] + self.alpha * current_neuron.a * self.layers[l+1][w].err
+
+                    # Special case for dummy neuron
+                    dummy_activation = self.layers[0][0].a
+                    for l, current_layer in enumerate(self.layers[1:]):
+                        l += 1
+                        for w, current_neuron in enumerate(current_layer):
+                            self.layers[0][0].weights[l][w] = self.layers[0][0].weights[l][w] + self.alpha * dummy_activation * current_neuron.err
 
         # Clear terminal line
         print()
