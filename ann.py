@@ -135,10 +135,10 @@ class ANN:
         """Activation function"""
         return 1.0 / (1 + math.exp(-1*in_sum))
 
-    def backpropagate(self, train=True, norm=255):
+    def backpropagate(self, img_dir, train=True, norm=255):
         """Run main backpropagation algorithm for training"""
         # Run for specified number of iterations
-        all_files = os.listdir(self.train_dir)
+        all_files = os.listdir(self.img_dir)
         for k in range(self.iters):
 
             # Randomize input order
@@ -146,7 +146,7 @@ class ANN:
             random.shuffle(all_files)
             for i, img_file in enumerate(all_files):
                 # Use image grayscale values as activation values for first layer (1)
-                for i, pix_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
+                for i, pix_val in enumerate(get_grayscale_vals(self.img_dir + '/' + img_file)):
                     self.layers[1][i].a = pix_val / 255.0
 
                 # Calculate activation values for all other neurons (2, 3)

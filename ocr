@@ -41,11 +41,19 @@ def main():
                     shutil.rmtree(formatted_dir)
                 create_formatted(args.train_dir, formatted_dir, args.dimension)
 
-        # Run the OCR ANN
+        # Construct the OCR ANN
         my_ann = ANN(formatted_dir, args.classify, args.save_file, args.alpha, args.iters)
         my_ann.build()
-        my_ann.backpropagate()
-        my_ann.save()
+
+        # Train if we have a training directory
+        if formatted_dir:
+            my_ann.backpropagate()
+            my_ann.save()
+        # Classify if we have a classify directory
+        if args.classify:
+            my_ann.classify()
+        else:
+            print('No images provided for classification')
 
         # Remove the old traning images directory before creating new ones
         if not args.keep and os.path.isdir(formatted_dir):
