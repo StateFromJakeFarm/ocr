@@ -25,18 +25,15 @@ class ANN:
         self.encodings = {}
 
         # Members set internally
-        self.num_chars = 0
+        self.chars = []
         self.layers = []
 
-    def get_num_chars(self):
+    def get_chars(self):
         """Get the number of characters we are training on"""
-        found_chars = []
         for filename in os.listdir(self.train_dir):
             this_char = filename[0]
-            if this_char not in found_chars:
-                found_chars.append(this_char)
-
-        self.num_chars = len(found_chars)
+            if this_char not in self.chars:
+                self.chars.append(this_char)
 
     def build_structure(self, file):
         """Construct the Neuron web based on the structure file"""
@@ -89,6 +86,7 @@ class ANN:
     def build(self):
         """Construct the network and load weights (if any)"""
         with open(self.structure_file, 'r') as file:
+            self.get_chars()
             self.build_structure(file)
             self.assign_all_weights(file)
             self.assign_encodings()
@@ -120,7 +118,7 @@ class ANN:
     def assign_encodings(self):
         """Create unique encodings for all characters based on number of output nodes"""
         # VERY basic right now...
-        for char in range(self.num_chars):
+        for char in self.chars:
             self.encodings[char] = []
             for n in range(len(self.layers[-1])):
                 val = 0.1
@@ -138,13 +136,13 @@ class ANN:
         # Run for specified number of iterations
         all_files = os.listdir(self.train_dir)
         for k in range(self.iters):
+
+            # Randomize input order
             print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
             random.shuffle(all_files)
-            # Randomize order of inputs
             for i, img_file in enumerate(all_files):
                 # Use image grayscale values as activation values for first layer (1)
-                expected_outputs = get_grayscale_vals(self.train_dir + '/' + img_file)
-                for i, pix_val in enumerate(expected_outputs):
+                for i, pix_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
                     self.layers[1][i].a = pix_val / 255.0
 
                 # Calculate activation values for all other neurons (2, 3)
@@ -167,6 +165,7 @@ class ANN:
                 # Only update weights if training
                 if train:
                     # Calculate output layer errors (4)
+                    expected_outputs = self.encodings[img_file[0]]
                     for n, current_neuron in enumerate(self.layers[-1]):
                         current_neuron.err = current_neuron.a * (1 - current_neuron.a) * (expected_outputs[n] - current_neuron.a)
 
