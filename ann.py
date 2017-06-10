@@ -1,7 +1,9 @@
 import os
 import math
 import random
-from imgFuncs import get_grayscale_vals
+import shutil
+from PIL import Image
+from imgFuncs import get_grayscale_vals, find_chars
 
 class ANN:
     """Class to execute the artificial neural network"""
@@ -35,6 +37,7 @@ class ANN:
             this_char = filename[0]
             if this_char not in self.chars:
                 self.chars.append(this_char)
+        print(self.chars)
 
     def build_structure(self, file):
         """Construct the Neuron web based on the structure file"""
@@ -87,7 +90,10 @@ class ANN:
     def build(self):
         """Construct the network and load weights (if any)"""
         with open(self.structure_file, 'r') as file:
-            self.get_chars()
+            # Assume 62 default characters if we aren't re-training (could store this in save file???)
+            if self.train_dir:
+                self.get_chars()
+
             self.build_structure(file)
             self.assign_all_weights(file)
             self.assign_encodings()
@@ -96,7 +102,7 @@ class ANN:
     def save(self, f_name=''):
         """Save the structure and learned weights for this network"""
         while f_name == '':
-            f_name = input('Enter save file name ([N/n] to exit): ')
+            f_name = input('Enter save file name ([N/n] to skip): ')
 
         if f_name in ['N', 'n']:
             return
@@ -135,80 +141,114 @@ class ANN:
         """Activation function"""
         return 1.0 / (1 + math.exp(-1*in_sum))
 
-    def backpropagate(self, img_dir, train=True, norm=255):
+    def calc_activations(self, img_file_path):
+        """Function to calculate neuron activation values"""
+        # Use image grayscale values as activation values for first layer (1)
+        for i, pix_val in enumerate(get_grayscale_vals(img_file_path)):
+            self.layers[1][i].a = pix_val / 255.0
+
+        # Calculate activation values for all other neurons (2, 3)
+        for l, current_layer in enumerate(self.layers[2:]):
+            l += 2
+            for n in range(len(current_layer)):
+                # Start with weight from dummy neuron (because it's activation always = 1)
+                in_sum = self.layers[0][0].weights[l][n]
+
+                # Add weight * activation for all neurons in previous layer
+                for prev in self.layers[l-1]:
+                    weight_to_current = prev.weights[n]
+                    prev_activation   = prev.a
+
+                    in_sum += prev_activation * weight_to_current
+
+                # Set the current neuron's activation value using chosen activation function
+                self.layers[l][n].a = self.activation(in_sum)
+
+    def get_most_likely(self):
+        """Return the most likely character"""
+        lowest_dist = None
+        most_likely = None
+
+        i = 0
+        for char, char_vals in self.chars.iteritems():
+            dist_sum = 0
+            for neuron in self.layers[-1]:
+                dist_sum += (neuron.a - char_vals[i])**2
+
+            euclid_dist = math.sqrt(dist_sum)
+            if euclid_dist < lowest_dist or lowest_dist is None:
+                most_likely = char
+                lowest_dist = euclid_dist
+
+        return most_likely
+
+    def backpropagate(self, norm=255):
         """Run main backpropagation algorithm for training"""
         # Run for specified number of iterations
-        all_files = os.listdir(img_dir)
+        all_files = os.listdir(self.train_dir)
         for k in range(self.iters):
-
             # Randomize input order
             print('Training Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
             random.shuffle(all_files)
             for i, img_file in enumerate(all_files):
-                # Use image grayscale values as activation values for first layer (1)
-                for i, pix_val in enumerate(get_grayscale_vals(img_dir + '/' + img_file)):
-                    self.layers[1][i].a = pix_val / 255.0
+                # Calculate activation values for all neurons
+                self.calc_activations(self.train_dir.strip('/') + '/' + img_file)
 
-                # Calculate activation values for all other neurons (2, 3)
-                for l, current_layer in enumerate(self.layers[2:]):
-                    l += 2
-                    for n in range(len(current_layer)):
-                        # Start with weight from dummy neuron (because it's activation always = 1)
-                        in_sum = self.layers[0][0].weights[l][n]
+                # Calculate output layer errors (4)
+                expected_outputs = self.encodings[img_file[0]]
+                for n, current_neuron in enumerate(self.layers[-1]):
+                    current_neuron.err = current_neuron.a * (1 - current_neuron.a) * (expected_outputs[n] - current_neuron.a)
 
-                        # Add weight * activation for all neurons in previous layer
-                        for prev in self.layers[l-1]:
-                            weight_to_current = prev.weights[n]
-                            prev_activation   = prev.a
+                # Calculate errors for all other neurons (5, 6)
+                for l, current_layer in reversed(list(enumerate(self.layers[:-1]))):
+                    if l <= 0:
+                        break
 
-                            in_sum += prev_activation * weight_to_current
+                    for current_neuron in current_layer:
+                        err_sum = 0
+                        for f, further_neuron in enumerate(self.layers[l+1]):
+                            err_sum += further_neuron.err * current_neuron.weights[f]
 
-                        # Set the current neuron's activation value using chosen activation function
-                        self.layers[l][n].a = self.activation(in_sum)
+                        current_neuron.err = current_neuron.a * (1 - current_neuron.a) * err_sum
 
-                # Only update weights if training
-                if train:
-                    # Calculate output layer errors (4)
-                    expected_outputs = self.encodings[img_file[0]]
-                    for n, current_neuron in enumerate(self.layers[-1]):
-                        current_neuron.err = current_neuron.a * (1 - current_neuron.a) * (expected_outputs[n] - current_neuron.a)
+                # Update weights (7)
+                for l, current_layer in enumerate(self.layers[1:]):
+                    for current_neuron in current_layer:
+                        for w in range(len(current_neuron.weights)):
+                            current_neuron.weights[w] = current_neuron.weights[w] + self.alpha * current_neuron.a * self.layers[l+1][w].err
 
-                    # Calculate errors for all other neurons (5, 6)
-                    for l, current_layer in reversed(list(enumerate(self.layers[:-1]))):
-                        if l <= 0:
-                            break
-
-                        for current_neuron in current_layer:
-                            err_sum = 0
-                            for f, further_neuron in enumerate(self.layers[l+1]):
-                                err_sum += further_neuron.err * current_neuron.weights[f]
-
-                            current_neuron.err = current_neuron.a * (1 - current_neuron.a) * err_sum
-
-                    # Update weights (7)
-                    for l, current_layer in enumerate(self.layers[1:]):
-                        for current_neuron in current_layer:
-                            for w in range(len(current_neuron.weights)):
-                                current_neuron.weights[w] = current_neuron.weights[w] + self.alpha * current_neuron.a * self.layers[l+1][w].err
-
-                    # Special case for dummy neuron
-                    dummy_activation = self.layers[0][0].a
-                    for l, current_layer in enumerate(self.layers[1:]):
-                        l += 1
-                        for w, current_neuron in enumerate(current_layer):
-                            self.layers[0][0].weights[l][w] = self.layers[0][0].weights[l][w] + self.alpha * dummy_activation * current_neuron.err
+                # Special case for dummy neuron
+                dummy_activation = self.layers[0][0].a
+                for l, current_layer in enumerate(self.layers[1:]):
+                    l += 1
+                    for w, current_neuron in enumerate(current_layer):
+                        self.layers[0][0].weights[l][w] = self.layers[0][0].weights[l][w] + self.alpha * dummy_activation * current_neuron.err
 
         # Clear terminal line
         print()
 
     def classify(self):
         """Run the backpropagation algorithm without adjusting weights, then attempt to classify images as characters"""
-        for img_file in os.listdir(self.classify_dir):
-            char_img = Image.open(img_file)
-            char_img.show()
-            print(img_file + ' says: ', end='')
+        for string_img_file in os.listdir(self.classify_dir):
+            string_img_file = self.classify_dir.strip('/') + '/' + string_img_file
 
-            char_img.close()
+            # Create directory to hold all the characters we find in this image
+            found_chars_dir = string_img_file + 'found_chars'
+            find_chars(string_img_file, found_chars_dir, int(math.sqrt(len(self.layers[1]))))
+
+            # Classify each character we find in the image
+            print(string_img_file + ' says: ', end='\n')
+            for found_char_file in os.listdir(found_chars_dir):
+                found_char_file = found_chars_dir + '/' + found_char_file
+                self.calc_activations(found_char_file)
+                print(self.get_most_likely(), end='')
+
+            # Remove directory for this image once we're done classifying it
+            shutil.rmtree(found_chars_dir)
+
+            # Clear line
+            print()
+
 
 
 

@@ -91,9 +91,9 @@ def create_formatted(rawFolder, bmpFolder, side_len):
 
     print('Training images prepared')
 
-def full_img_bmp(raw_path, classify_folder, side_len, highLo):
+def find_chars(raw_path, found_folder, side_len, highLo=50):
     """Slice up an image into its separate characters"""
-    clear_folder(classify_folder)
+    clear_folder(found_folder)
 
     img = Image.open(raw_path).convert('L')
     imgX, imgY = img.size
@@ -123,7 +123,7 @@ def full_img_bmp(raw_path, classify_folder, side_len, highLo):
 
         if bounds[0] != -1 and not saw_char:
             i += 1
-            make_char_square(img.crop(tuple(bounds)), os.path.join(classify_folder, str(i) + '.bmp'), side_len)
+            make_char_square(img.crop(tuple(bounds)), os.path.join(found_folder, str(i) + '.bmp'), side_len)
             bounds = [-1,0,imgX,imgY]
 
 def get_grayscale_vals(img_file_path):
