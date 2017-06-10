@@ -85,7 +85,7 @@ def create_formatted(rawFolder, bmpFolder, sideLen):
         for f in listdir(os.path.join(rawFolder, char)):
             rawPath = os.path.join(rawFolder, char, f)
             bmpPath = os.path.join(bmpFolder, char+str(i)+'.bmp')
-            print(rawPath + ' --(' + str(sideLen) + 'x' + str(sideLen) + ')-> ' + bmpPath)
+            print(rawPath + ' --(' + str(sideLen) + 'x' + str(sideLen) + ')-> ' + bmpPath, end='\r')
             make_char_square(rawPath, bmpPath, sideLen)
             i += 1
 

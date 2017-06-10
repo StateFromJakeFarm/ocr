@@ -138,7 +138,7 @@ class ANN:
         for k in range(self.iters):
 
             # Randomize input order
-            print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
+            print('Training Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
             random.shuffle(all_files)
             for i, img_file in enumerate(all_files):
                 # Use image grayscale values as activation values for first layer (1)
