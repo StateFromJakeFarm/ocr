@@ -64,13 +64,14 @@ class ANN:
 
         # Set all dummy neuron weights and use 2-d list to store weights
         i = 0
+        self.layers[0][0].weights.append([])
         for l in range(len(self.layers[1:])):
             this_layer_weights = []
             for n in range(len(self.layers[l+1])):
                 # Use passed dummy neuron value if we aren't loading a network
                 if len(dummies) == i:
                     dummies += [dummy]
-                this_layer_weights.append(dummies[i])
+                this_layer_weights.append(float(dummies[i]))
                 i += 1
             self.layers[0][0].weights.append(this_layer_weights)
 
@@ -124,6 +125,10 @@ class ANN:
 
                 self.encodings[char].append(val)
 
+    def activation(self, in_sum):
+        """Activation function"""
+        return 1.0 / (1 + math.exp(0.1*in_sum))
+
     def backpropagate(self, norm=255):
         """Run main backpropagation algorithm for training"""
         # Run for specified number of iterations
@@ -132,22 +137,36 @@ class ANN:
             print('Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
             random.shuffle(all_files)
             # Randomize order of inputs
-            for i, img_file in enumerate(all_files):
+#            for i, img_file in enumerate(all_files):
+            for i, img_file in enumerate([1]):
 
                 # Use image grayscale values as activation values for first layer (1)
-                for i, pix_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
-                    self.layers[1][i].a = pix_val / 255.0
+#                for i, pix_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
+                testlist = [0.11, 0.11]
+                for i, pix_val in enumerate(testlist):
+#                    self.layers[1][i].a = pix_val / 255.0
+                    self.layers[1][i].a = pix_val
 
                 # Calculate activation values for all other neurons (2)
-                for l in range(len(self.layers[2:])):
-                    for n in range(len(self.layers[l])):
+                for l, current_layer in enumerate(self.layers[2:]):
+                    l += 2
+                    for n in range(len(current_layer)):
                         # Start with weight from dummy neuron (because it's activation always = 1)
-                        in_sum = layers[0][0].weights[n]
+                        in_sum = self.layers[0][0].weights[l][n]
 
+                        print(in_sum, end=' + ')
                         # Add weight * activation for all neurons in previous layer
                         for p in range(len(self.layers[l-1])):
                             weight_to_current = self.layers[l-1][p].weights[n]
                             prev_activation   = self.layers[l-1][p].a
+                            print(str(prev_activation) + '*' + str(weight_to_current) , end=' + ')
+
+                            in_sum += prev_activation * weight_to_current
+
+                        # Set the current neuron's activation value using chosen activation function
+                        print(' == ' + str(in_sum))
+                        self.layers[l][n].a = self.activation(in_sum)
+                        print('       a = ' + str(self.layers[l][n].a))
 
 
         # Clear terminal
