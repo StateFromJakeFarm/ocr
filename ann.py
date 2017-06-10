@@ -124,7 +124,7 @@ class ANN:
 
                 self.encodings[char].append(val)
 
-    def backpropagate(self):
+    def backpropagate(self, norm=255):
         """Run main backpropagation algorithm for training"""
         # Run for specified number of iterations
         all_files = os.listdir(self.train_dir)
@@ -134,9 +134,44 @@ class ANN:
             # Randomize order of inputs
             for i, img_file in enumerate(all_files):
 
-                # Use image grayscale values as inputs for first layer
-                for i, in_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
-                    self.layers[1][i].a = in_val
+                # Use image grayscale values as activation values for first layer (1)
+                for i, pix_val in enumerate(get_grayscale_vals(self.train_dir + '/' + img_file)):
+                    self.layers[1][i].a = pix_val / 255.0
+
+                # Calculate activation values for all other neurons (2)
+                for l in range(len(self.layers[2:])):
+                    for n in range(len(self.layers[l])):
+                        # Start with weight from dummy neuron (because it's activation always = 1)
+                        in_sum = layers[0][0].weights[n]
+
+                        # Add weight * activation for all neurons in previous layer
+                        for p in range(len(self.layers[l-1])):
+                            weight_to_current = self.layers[l-1][p].weights[n]
+                            prev_activation   = self.layers[l-1][p].a
+
 
         # Clear terminal
         print()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
