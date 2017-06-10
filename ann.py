@@ -166,7 +166,7 @@ class ANN:
     def get_most_likely(self):
         """Return the most likely character"""
         lowest_dist = None
-        most_likely = None
+        most_likely = ''
 
         i = 0
         for char, char_vals in self.encodings.items():
@@ -175,7 +175,7 @@ class ANN:
                 dist_sum += (neuron.a - char_vals[i])**2
 
             euclid_dist = math.sqrt(dist_sum)
-            if euclid_dist < lowest_dist or lowest_dist is None:
+            if lowest_dist is None or euclid_dist < lowest_dist:
                 most_likely = char
                 lowest_dist = euclid_dist
 
@@ -236,7 +236,7 @@ class ANN:
             find_chars(string_img_file, found_chars_dir, int(math.sqrt(len(self.layers[1]))))
 
             # Classify each character we find in the image
-            print(string_img_file + ' says: ', end='\n')
+            print(string_img_file + ' says: ', end='')
             for found_char_file in os.listdir(found_chars_dir):
                 found_char_file = found_chars_dir + '/' + found_char_file
                 self.calc_activations(found_char_file)
