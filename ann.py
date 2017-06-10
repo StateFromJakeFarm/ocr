@@ -31,10 +31,17 @@ class ANN:
         self.chars = []
         self.layers = []
 
-    def get_chars(self):
+    def get_chars(self, file):
         """Get the number of characters we are training on"""
-        for filename in os.listdir(self.train_dir):
-            this_char = filename[0]
+        # Load characters from file
+        all_chars = []
+        if self.train_dir:
+            all_chars = [f_name[0] for f_name in os.listdir(self.train_dir)] 
+        # Find unique characters in training directory
+        else:
+            all_chars = file.readline().strip(' \n').split(' ')
+
+        for this_char in all_chars:
             if this_char not in self.chars:
                 self.chars.append(this_char)
 
@@ -89,11 +96,8 @@ class ANN:
     def build(self):
         """Construct the network and load weights (if any)"""
         with open(self.structure_file, 'r') as file:
-            # Assume 62 default characters if we aren't re-training (could store this in save file???)
-            if self.train_dir:
-                self.get_chars()
-
             self.build_structure(file)
+            self.get_chars(file)
             self.assign_all_weights(file)
             self.assign_encodings()
             file.close()
@@ -110,6 +114,11 @@ class ANN:
             # Save structure
             for l in range(len(self.layers[1:])):
                 file.write( str(len(self.layers[l+1])) + ' ' )
+            file.write('\n')
+
+            # Save characters this network is trained for
+            for char in self.chars:
+                file.write(char + ' ')
             file.write('\n')
 
             # Save dummy neuron weights
