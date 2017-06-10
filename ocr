@@ -18,29 +18,31 @@ def main():
         help='flag to set whether or not to keep converted training/testing images (default is True)')
     parser.add_argument('-n', '--new', action='store_true',
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
-    parser.add_argument('-s', '--save-file', type=str, default=None,
+    parser.add_argument('-s', '--save_file', type=str, default=None,
         help='file containing saved ANN or simply the structure to be trained')
     parser.add_argument('-a', '--alpha', type=float, default=0.001,
         help='the alpha value for error propagation')
     parser.add_argument('-i', '--iters', type=int, default=200,
         help='number of training iterations to run on the training images')
-    parser.add_argument('-c', '--classify', action='store_true', default=True,
+    parser.add_argument('-c', '--classify', type=str, default=None,
         help='directory containing images to be OCR\'d by ANN')
     args = parser.parse_args()
 
     # Format the images for the ANN
-    if args.train_dir and os.path.isdir(args.train_dir) and args.structure:
-        formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
+    if (args.train_dir and os.path.isdir(args.train_dir)) or args.save_file:
+        formatted_dir = None
+        if args.train_dir:
+            formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
 
-        # Only remake all the images if the formatted images directory doesn't
-        # exist OR the user wants to remake all the formatted images regardless
-        if args.new or not os.path.isdir(formatted_dir):
-            if os.path.isdir(formatted_dir):
-                shutil.rmtree(formatted_dir)
-            create_formatted(args.train_dir, formatted_dir, args.dimension)
+            # Only remake all the images if the formatted images directory doesn't
+            # exist OR the user wants to remake all the formatted images regardless
+            if args.new or not os.path.isdir(formatted_dir):
+                if os.path.isdir(formatted_dir):
+                    shutil.rmtree(formatted_dir)
+                create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # Run the OCR ANN
-        my_ann = ANN(formatted_dir, classify_dir, args.structure, args.alpha, args.iters)
+        my_ann = ANN(formatted_dir, args.classify, args.save_file, args.alpha, args.iters)
         my_ann.build()
         my_ann.backpropagate()
         my_ann.save()
@@ -49,7 +51,7 @@ def main():
         if not args.keep and os.path.isdir(formatted_dir):
             shutil.rmtree(formatted_dir)
     else:
-        print("ERROR: must provide name of properly-structured images directory and structure file")
+        print("ERROR: must provide properly-structured images directory and save file")
 
 
 if __name__ == '__main__':

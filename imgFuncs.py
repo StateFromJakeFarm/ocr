@@ -85,11 +85,11 @@ def create_formatted(rawFolder, bmpFolder, side_len):
         for f in listdir(os.path.join(rawFolder, char)):
             raw_path = os.path.join(rawFolder, char, f)
             bmpPath = os.path.join(bmpFolder, char+str(i)+'.bmp')
-            print(raw_path + ' --(' + str(side_len) + 'x' + str(side_len) + ')-> ' + bmpPath + '                                                       ', end='\r')
+            print(raw_path + ' --(' + str(side_len) + 'x' + str(side_len) + ')-> ' + bmpPath)
             make_char_square(raw_path, bmpPath, side_len)
             i += 1
 
-    print('\r                                                       \rTraining images prepared')
+    print('Training images prepared')
 
 def full_img_bmp(raw_path, classify_folder, side_len, highLo):
     """Slice up an image into its separate characters"""

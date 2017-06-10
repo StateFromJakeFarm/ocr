@@ -16,9 +16,10 @@ class ANN:
             """Assign the Neuron its weights"""
             self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
 
-    def __init__(self, train_dir, structure_file, alpha, iters):
+    def __init__(self, train_dir, classify_dir, structure_file, alpha, iters):
         """Constructor simply sets meta member variables"""
         self.train_dir = train_dir
+        self.classify_dir = classify_dir
         self.structure_file = structure_file
         self.alpha = alpha
         self.iters = iters
