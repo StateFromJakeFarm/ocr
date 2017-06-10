@@ -29,7 +29,7 @@ def main():
     args = parser.parse_args()
 
     # Format the images for the ANN
-    if (args.train_dir and os.path.isdir(args.train_dir)) or args.save_file:
+    if (args.train_dir and os.path.isdir(args.train_dir) and args.save_file) or args.save_file:
         formatted_dir = None
         if args.train_dir:
             formatted_dir = args.train_dir.split('/')[0] + 'Formatted'

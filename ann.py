@@ -37,7 +37,6 @@ class ANN:
             this_char = filename[0]
             if this_char not in self.chars:
                 self.chars.append(this_char)
-        print(self.chars)
 
     def build_structure(self, file):
         """Construct the Neuron web based on the structure file"""
@@ -170,7 +169,7 @@ class ANN:
         most_likely = None
 
         i = 0
-        for char, char_vals in self.chars.iteritems():
+        for char, char_vals in self.encodings.items():
             dist_sum = 0
             for neuron in self.layers[-1]:
                 dist_sum += (neuron.a - char_vals[i])**2
