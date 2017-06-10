@@ -47,7 +47,7 @@ def main():
 
         # Train if we have a training directory
         if formatted_dir:
-            my_ann.backpropagate()
+            my_ann.backpropagate(formatted_dir)
             my_ann.save()
         # Classify if we have a classify directory
         if args.classify:

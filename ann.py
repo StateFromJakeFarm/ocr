@@ -138,7 +138,7 @@ class ANN:
     def backpropagate(self, img_dir, train=True, norm=255):
         """Run main backpropagation algorithm for training"""
         # Run for specified number of iterations
-        all_files = os.listdir(self.img_dir)
+        all_files = os.listdir(img_dir)
         for k in range(self.iters):
 
             # Randomize input order
@@ -146,7 +146,7 @@ class ANN:
             random.shuffle(all_files)
             for i, img_file in enumerate(all_files):
                 # Use image grayscale values as activation values for first layer (1)
-                for i, pix_val in enumerate(get_grayscale_vals(self.img_dir + '/' + img_file)):
+                for i, pix_val in enumerate(get_grayscale_vals(img_dir + '/' + img_file)):
                     self.layers[1][i].a = pix_val / 255.0
 
                 # Calculate activation values for all other neurons (2, 3)
@@ -200,3 +200,30 @@ class ANN:
 
         # Clear terminal line
         print()
+
+    def classify(self):
+        """Run the backpropagation algorithm without adjusting weights, then attempt to classify images as characters"""
+        for img_file in os.listdir(self.classify_dir):
+            char_img = Image.open(img_file)
+            char_img.show()
+            print(img_file + ' says: ', end='')
+
+            char_img.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
