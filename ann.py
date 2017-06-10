@@ -174,8 +174,10 @@ class ANN:
                         current_neuron.err = current_neuron.a * (1 - current_neuron.a) * (expected_outputs[n] - current_neuron.a)
 
                     # Calculate errors for all other neurons (5, 6)
-                    for l, current_layer in enumerate(reversed(self.layers[1:-1])):
-                        print(l)
+                    for l, current_layer in reversed(list(enumerate(self.layers[:-1]))):
+                        if l <= 0:
+                            break
+
                         for current_neuron in current_layer:
                             err_sum = 0
                             for f, further_neuron in enumerate(self.layers[l+1]):
