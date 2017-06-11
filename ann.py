@@ -221,6 +221,7 @@ class ANN:
 
                 # Update weights (7)
                 for l, current_layer in enumerate(self.layers[1:]):
+                    l += 1
                     for current_neuron in current_layer:
                         for w in range(len(current_neuron.weights)):
                             current_neuron.weights[w] = current_neuron.weights[w] + self.alpha * current_neuron.a * self.layers[l+1][w].err
@@ -245,12 +246,12 @@ class ANN:
             find_chars(string_img_file, found_chars_dir, int(math.sqrt(len(self.layers[1]))))
 
             # Classify each character we find in the image
-            print(string_img_file + ' says: ')
+            print(string_img_file + ' says: ', end='')
             for found_char_file in os.listdir(found_chars_dir):
                 found_char_file = found_chars_dir + '/' + found_char_file
                 self.calc_activations(found_char_file)
 
-                print(self.get_most_likely())
+                print(self.get_most_likely(), end='')
 
             # Remove directory for this image once we're done classifying it
             shutil.rmtree(found_chars_dir)
