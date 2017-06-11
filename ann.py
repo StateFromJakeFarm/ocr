@@ -248,7 +248,7 @@ class ANN:
 
             # Classify each character we find in the image
             print(string_img_file + ' says: ', end='')
-            for found_char_file in os.listdir(found_chars_dir):
+            for found_char_file in sorted(os.listdir(found_chars_dir)):
                 found_char_file = found_chars_dir + '/' + found_char_file
                 self.calc_activations(found_char_file)
 

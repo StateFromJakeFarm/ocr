@@ -20,6 +20,8 @@ def main():
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
     parser.add_argument('-l', '--load', type=str, default=None,
         help='file containing saved ANN or simply the structure to be trained')
+    parser.add_argument('-s', '--save', type=str, default='',
+        help='name of save file for trained ANN')
     parser.add_argument('-a', '--alpha', type=float, default=0.0001,
         help='the alpha value for error propagation')
     parser.add_argument('-i', '--iters', type=int, default=200,
@@ -48,7 +50,7 @@ def main():
         # Train if we have a training directory
         if formatted_dir:
             my_ann.backpropagate(formatted_dir)
-            my_ann.save()
+            my_ann.save(args.save)
         # Classify if we have a classify directory
         if args.classify:
             my_ann.classify()
