@@ -136,11 +136,11 @@ class ANN:
     def assign_encodings(self):
         """Create unique encodings for all characters based on number of output nodes"""
         # VERY basic right now...
-        for char in self.chars:
+        for c, char in enumerate(sorted(self.chars)):
             self.encodings[char] = []
             for n in range(len(self.layers[-1])):
                 val = 0.1
-                if char == n:
+                if c == n:
                     val = 0.9
 
                 self.encodings[char].append(val)
@@ -245,11 +245,12 @@ class ANN:
             find_chars(string_img_file, found_chars_dir, int(math.sqrt(len(self.layers[1]))))
 
             # Classify each character we find in the image
-            print(string_img_file + ' says: ', end='')
+            print(string_img_file + ' says: ')
             for found_char_file in os.listdir(found_chars_dir):
                 found_char_file = found_chars_dir + '/' + found_char_file
                 self.calc_activations(found_char_file)
-                print(self.get_most_likely(), end='')
+
+                print(self.get_most_likely())
 
             # Remove directory for this image once we're done classifying it
             shutil.rmtree(found_chars_dir)
