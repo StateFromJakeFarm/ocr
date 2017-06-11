@@ -31,7 +31,7 @@ def main():
     args = parser.parse_args()
 
     # Format the images for the ANN
-    if (args.train_dir and os.path.isdir(args.train_dir) and args.load) or args.load:
+    if args.load or (args.train_dir and os.path.isdir(args.train_dir) and args.load):
         formatted_dir = None
         if args.train_dir:
             formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
@@ -58,7 +58,7 @@ def main():
             print('No images provided for classification')
 
         # Remove the old traning images directory before creating new ones
-        if not args.keep and os.path.isdir(formatted_dir):
+        if formatted_dir and not args.keep and os.path.isdir(formatted_dir):
             shutil.rmtree(formatted_dir)
     else:
         print("ERROR: must provide properly-structured images directory and save file")
