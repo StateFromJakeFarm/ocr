@@ -177,11 +177,12 @@ class ANN:
         lowest_dist = None
         most_likely = ''
 
-        i = 0
         for char, char_vals in self.encodings.items():
             dist_sum = 0
+            i = 0
             for neuron in self.layers[-1]:
                 dist_sum += (neuron.a - char_vals[i])**2
+                i += 1
 
             euclid_dist = math.sqrt(dist_sum)
             if lowest_dist is None or euclid_dist < lowest_dist:
