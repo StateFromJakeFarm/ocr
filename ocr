@@ -14,7 +14,7 @@ def main():
         help='train OCR on the images in a properly-structured directory of character images')
     parser.add_argument('-d', '--dimension', type=int, default=10,
         help='length of side of converted bmp image (default is 10)')
-    parser.add_argument('-k', '--keep', action='store_false', default=False,
+    parser.add_argument('-k', '--keep', action='store_true', default=False,
         help='flag to keep converted training/testing images (default is False)')
     parser.add_argument('-n', '--new', action='store_true',
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
