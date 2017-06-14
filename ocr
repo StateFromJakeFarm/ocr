@@ -26,7 +26,7 @@ def main():
         help='the alpha value for error propagation')
     parser.add_argument('-i', '--iters', type=int, default=200,
         help='number of training iterations to run on the training images')
-    parser.add_argument('-c', '--classify', type=str, default=None,
+    parser.add_argument('-r', '--read', type=str, default=None,
         help='directory containing images to be OCR\'d by ANN')
     args = parser.parse_args()
 
@@ -44,16 +44,16 @@ def main():
                 create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # Construct the OCR ANN
-        my_ann = ANN(formatted_dir, args.classify, args.load, args.alpha, args.iters)
+        my_ann = ANN(formatted_dir, args.read, args.load, args.alpha, args.iters)
         my_ann.build()
 
         # Train if we have a training directory
         if formatted_dir:
             my_ann.backpropagate(formatted_dir)
             my_ann.save(args.save)
-        # Classify if we have a classify directory
-        if args.classify:
-            my_ann.classify()
+        # Classify if we have a read directory
+        if args.read:
+            my_ann.read()
         else:
             print('No images provided for classification')
 

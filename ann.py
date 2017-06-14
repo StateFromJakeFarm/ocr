@@ -17,10 +17,10 @@ class ANN:
             """Assign the Neuron its weights"""
             self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
 
-    def __init__(self, train_dir, classify_dir, structure_file, alpha, iters):
+    def __init__(self, train_dir, read_dir, structure_file, alpha, iters):
         """Constructor simply sets meta member variables"""
         self.train_dir = train_dir
-        self.classify_dir = classify_dir
+        self.read_dir = read_dir
         self.structure_file = structure_file
         self.alpha = alpha
         self.iters = iters
@@ -237,10 +237,10 @@ class ANN:
         # Clear terminal line
         print()
 
-    def classify(self):
-        """Run the backpropagation algorithm without adjusting weights, then attempt to classify images as characters"""
-        for string_img_file in os.listdir(self.classify_dir):
-            string_img_file = self.classify_dir.strip('/') + '/' + string_img_file
+    def read(self):
+        """Run the backpropagation algorithm without adjusting weights, then attempt to read images as characters"""
+        for string_img_file in os.listdir(self.read_dir):
+            string_img_file = self.read_dir.strip('/') + '/' + string_img_file
 
             # Create directory to hold all the characters we find in this image
             found_chars_dir = string_img_file + 'found_chars'
@@ -254,7 +254,7 @@ class ANN:
 
                 print(self.get_most_likely(), end='')
 
-            # Remove directory for this image once we're done classifying it
+            # Remove directory for this image once we're done reading it
             shutil.rmtree(found_chars_dir)
 
             # Clear line
