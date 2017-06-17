@@ -3,6 +3,7 @@ import math
 import random
 import shutil
 from imgFuncs import get_grayscale_vals, find_chars
+from basicFuncs import sort_file_by_int_key
 
 class ANN:
     """Class to execute the artificial neural network"""
@@ -248,7 +249,7 @@ class ANN:
 
             # Classify each character we find in the image
             print(string_img_file + ' says: ', end='')
-            for found_char_file in sorted(os.listdir(found_chars_dir)):
+            for found_char_file in sorted(os.listdir(found_chars_dir), key=sort_file_by_int_key):
                 found_char_file = found_chars_dir + '/' + found_char_file
                 self.calc_activations(found_char_file)
 
