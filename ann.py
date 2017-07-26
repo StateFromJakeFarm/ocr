@@ -202,7 +202,7 @@ class ANN:
             random.shuffle(all_files)
             for i, img_file in enumerate(all_files):
                 # Calculate activation values for all neurons
-                self.calc_activations(self.train_dir.strip('/') + '/' + img_file)
+                self.calc_activations(os.path.join(self.train_dir.strip('\/'), img_file))
 
                 # Calculate output layer errors (4)
                 expected_outputs = self.encodings[img_file[0]]
@@ -241,7 +241,7 @@ class ANN:
     def read(self):
         """Run the backpropagation algorithm without adjusting weights, then attempt to read images as characters"""
         for string_img_file in os.listdir(self.read_dir):
-            string_img_file = self.read_dir.strip('/') + '/' + string_img_file
+            string_img_file = os.path.join(self.read_dir.strip('\/'), string_img_file)
 
             # Create directory to hold all the characters we find in this image
             found_chars_dir = string_img_file + 'found_chars'
@@ -250,7 +250,7 @@ class ANN:
             # Classify each character we find in the image
             print(string_img_file + ' says: ', end='')
             for found_char_file in sorted(os.listdir(found_chars_dir), key=sort_file_by_int_key):
-                found_char_file = found_chars_dir + '/' + found_char_file
+                found_char_file = os.path.join(found_chars_dir, found_char_file)
                 self.calc_activations(found_char_file)
 
                 print(self.get_most_likely(), end='')

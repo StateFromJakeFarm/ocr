@@ -34,7 +34,7 @@ def main():
     if args.load or (args.train_dir and os.path.isdir(args.train_dir) and args.load):
         formatted_dir = None
         if args.train_dir:
-            formatted_dir = args.train_dir.split('/')[0] + 'Formatted'
+            formatted_dir = os.path.split(args.train_dir)[0] + 'Formatted'
 
             # Only remake all the images if the formatted images directory doesn't
             # exist OR the user wants to remake all the formatted images regardless
