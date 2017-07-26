@@ -51,7 +51,7 @@ class ANN:
         layer_depths = ['1'] + file.readline().strip(' \n').split(' ')
         self.layers = [[ANN.Neuron() for n in range(int(l))] for l in layer_depths]
 
-        # Dummy neuron always has activation value of 1
+        # Dummy neuron always has activation value of 1 (easy way to handle biases)
         self.layers[0][0].a = 1
 
     def assign_all_weights(self, file, dummy=0.01, mini=-0.5, maxi=0.5):
