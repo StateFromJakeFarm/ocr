@@ -153,7 +153,15 @@ class ANN:
     def calc_activations(self, img_file_path):
         """Function to calculate neuron activation values"""
         # Use image grayscale values as activation values for first layer (1)
-        for i, pix_val in enumerate(get_grayscale_vals(img_file_path)):
+        pix_vals = get_grayscale_vals(img_file_path)
+        pix_vals_len = len(pix_vals)
+        for i in range(len(self.layers[1])):
+            # The area-based resize can come up slightly short of actual desired area,
+            # so assume all pixels that got cut-off are blank
+            pix_val = 255
+            if i < pix_vals_len:
+                pix_val = pix_vals[i]
+
             self.layers[1][i].a = pix_val / 255.0
 
         # Calculate activation values for all other neurons (2, 3)

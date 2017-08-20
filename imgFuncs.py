@@ -1,5 +1,6 @@
 from PIL import Image
 from os import listdir
+from math import sqrt, floor
 from basicFuncs import clear_folder
 import os
 import sys
@@ -7,16 +8,9 @@ import subprocess
 import shutil
 import glob
 
-def make_char_square(path, new_path, side_len, highLo=None):
-    """Crop image to character and save as square bitmap"""
-    img = None
-    if type(path) is str:
-        img = Image.open(path).convert('L')
-    else:
-        img = path
-
+def get_char_bounds(img, highLo=None):
+    """Get the boundaries of the actual character within an image"""
     imgX, imgY = img.size
-
     pixels = img.load()
 
     # high-pass/low-pass filter
@@ -69,6 +63,19 @@ def make_char_square(path, new_path, side_len, highLo=None):
         if bounds[1] != -1 and not saw_char:
             break
 
+    return bounds
+
+def char_resize_square(path, new_path, side_len, highLo=None):
+    """Crop image to character and save as square bitmap"""
+    img = None
+    if type(path) is str:
+        img = Image.open(path).convert('L')
+    else:
+        img = path
+
+    # Get bounds of character within the image
+    bounds = get_char_bounds(img, highLo)
+
     # bad strip
     if -1 in bounds:
         return
@@ -76,7 +83,39 @@ def make_char_square(path, new_path, side_len, highLo=None):
     img = img.crop(tuple(bounds)).resize((side_len,side_len), Image.LANCZOS)
     img.convert('RGB').save(new_path)
 
-def create_formatted(rawFolder, bmpFolder, side_len):
+def char_resize_area(path, new_path, area, highLo=None):
+    """Crop image to character and save as bitmap with certain area and same width/height ratio"""
+    img = None
+    if type(path) is str:
+        img = Image.open(path).convert('L')
+    else:
+        img = path
+
+    # Get bounds of character within the image
+    bounds = get_char_bounds(img, highLo)
+
+    # bad strip
+    if -1 in bounds:
+        return    
+
+    # Get the current ratio
+    imgX = bounds[2] - bounds[0]
+    imgY = bounds[3] - bounds[1]
+    x_to_y = float(imgX) / float(imgY)
+
+    # Get the new dimensions that will maintain the ratio with desired area
+    newX = int(floor(sqrt(area) * x_to_y))
+    if newX <= 0:
+        newX = 1
+
+    newY = int(floor(area / newX))
+    if newY <= 0:
+        newY = 1
+
+    img = img.crop(tuple(bounds)).resize((newX, newY), Image.LANCZOS)
+    img.convert('RGB').save(new_path)
+
+def create_formatted(rawFolder, bmpFolder, area):
     """Convert images of characters to properly-formatted images"""
     clear_folder(bmpFolder)
 
@@ -85,13 +124,13 @@ def create_formatted(rawFolder, bmpFolder, side_len):
         for f in listdir(os.path.join(rawFolder, char)):
             raw_path = os.path.join(rawFolder, char, f)
             bmpPath = os.path.join(bmpFolder, char+str(i)+'.bmp')
-            print(raw_path + ' --(' + str(side_len) + 'x' + str(side_len) + ')-> ' + bmpPath)
-            make_char_square(raw_path, bmpPath, side_len)
+            print(raw_path + ' --(area = ' + str(area) + ')-> ' + bmpPath)
+            char_resize_area(raw_path, bmpPath, area)
             i += 1
 
     print('Training images prepared')
 
-def find_chars(raw_path, found_folder, side_len, highLo=50):
+def find_chars(raw_path, found_folder, area, highLo=50):
     """Slice up an image into its separate characters"""
     clear_folder(found_folder)
 
@@ -123,7 +162,7 @@ def find_chars(raw_path, found_folder, side_len, highLo=50):
 
         if bounds[0] != -1 and not saw_char:
             i += 1
-            make_char_square(img.crop(tuple(bounds)), os.path.join(found_folder, str(i) + '.bmp'), side_len)
+            char_resize_area(img.crop(tuple(bounds)), os.path.join(found_folder, str(i) + '.bmp'), area)
             bounds = [-1,0,imgX,imgY]
 
 def get_grayscale_vals(img_file_path):
