@@ -125,7 +125,7 @@ def create_formatted(rawFolder, bmpFolder, area):
             raw_path = os.path.join(rawFolder, char, f)
             bmpPath = os.path.join(bmpFolder, char+str(i)+'.bmp')
             print(raw_path + ' --(area = ' + str(area) + ')-> ' + bmpPath)
-            char_resize_area(raw_path, bmpPath, area)
+            char_resize_square(raw_path, bmpPath, area)
             i += 1
 
     print('Training images prepared')
@@ -162,7 +162,7 @@ def find_chars(raw_path, found_folder, area, highLo=50):
 
         if bounds[0] != -1 and not saw_char:
             i += 1
-            char_resize_area(img.crop(tuple(bounds)), os.path.join(found_folder, str(i) + '.bmp'), area)
+            char_resize_square(img.crop(tuple(bounds)), os.path.join(found_folder, str(i) + '.bmp'), area)
             bounds = [-1,0,imgX,imgY]
 
 def get_grayscale_vals(img_file_path):
