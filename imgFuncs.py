@@ -115,7 +115,7 @@ def char_resize_area(path, new_path, area, highLo=None):
     img = img.crop(tuple(bounds)).resize((newX, newY), Image.LANCZOS)
     img.convert('RGB').save(new_path)
 
-def create_formatted(rawFolder, bmpFolder, area):
+def create_formatted(rawFolder, bmpFolder, side_len):
     """Convert images of characters to properly-formatted images"""
     clear_folder(bmpFolder)
 
@@ -124,8 +124,8 @@ def create_formatted(rawFolder, bmpFolder, area):
         for f in listdir(os.path.join(rawFolder, char)):
             raw_path = os.path.join(rawFolder, char, f)
             bmpPath = os.path.join(bmpFolder, char+str(i)+'.bmp')
-            print(raw_path + ' --(area = ' + str(area) + ')-> ' + bmpPath)
-            char_resize_square(raw_path, bmpPath, area)
+            print(raw_path + ' --(' + str(side_len) + 'x' + str(side_len) + ')-> ' + bmpPath)
+            char_resize_square(raw_path, bmpPath, side_len)
             i += 1
 
     print('Training images prepared')
