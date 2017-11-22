@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-from imgFuncs import *
-from basicFuncs import *
+from img_funcs import *
+from basic_funcs import *
 from ann import *
 import os
 import sys

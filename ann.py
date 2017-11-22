@@ -2,8 +2,8 @@ import os
 import math
 import random
 import shutil
-from imgFuncs import get_grayscale_vals, find_chars
-from basicFuncs import sort_file_by_int_key
+from img_funcs import get_grayscale_vals, find_chars
+from basic_funcs import sort_file_by_int_key
 
 class ANN:
     """Class to execute the artificial neural network"""
