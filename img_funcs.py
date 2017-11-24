@@ -43,25 +43,25 @@ def get_char_bounds(img, high_lo=None):
         if bounds[0] != -1 and not saw_char:
             break
 
-    # start y, end y
-    for y in range(img_y):
-        saw_char = False
+    # start y (from top downwards)
+    y = 0
+    while y < img_y:
         for x in range(img_x):
-            if bounds[1] == -1:
-                if pixels[x,y] == 0:
-                    bounds[1] = y
-                    saw_char = True
-            else:
-                if pixels[x,y] == 0:
-                    if y != img_y-1:
-                        saw_char = True
-                    else:
-                        bounds[3] = img_y-1
-                elif x == img_x-1 and not saw_char:
-                    bounds[3] = y-1
+            if pixels[x,y] == 0:
+                bounds[1] = y
+                y = img_y
+                break
+        y += 1
 
-        if bounds[1] != -1 and not saw_char:
-            break
+    # end y (from bottom upwards)
+    y = img_y-1
+    while y >= 0:
+        for x in range(img_x):
+            if pixels[x,y] == 0:
+                bounds[3] = y
+                y = -1
+                break
+        y -= 1
 
     return bounds
 
@@ -81,7 +81,8 @@ def char_resize_square(path, new_path, side_len, high_lo=None):
         return
 
     img = img.crop(tuple(bounds)).resize((side_len,side_len), Image.LANCZOS)
-    img.convert('RGB').save(new_path)
+    img.show()
+    #img.convert('RGB').save(new_path)
 
 def char_resize_area(path, new_path, area, high_lo=None):
     """Crop image to character and save as bitmap with certain area and same width/height ratio"""
