@@ -81,8 +81,7 @@ def char_resize_square(path, new_path, side_len, high_lo=None):
         return
 
     img = img.crop(tuple(bounds)).resize((side_len,side_len), Image.LANCZOS)
-    img.show()
-    #img.convert('RGB').save(new_path)
+    img.convert('RGB').save(new_path)
 
 def char_resize_area(path, new_path, area, high_lo=None):
     """Crop image to character and save as bitmap with certain area and same width/height ratio"""
