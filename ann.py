@@ -200,7 +200,7 @@ class ANN:
 
         return most_likely
 
-    def backpropagate(self, norm=255):
+    def backpropagate(self):
         """Run main backpropagation algorithm for training"""
         # Run for specified number of iterations
         all_files = os.listdir(self.train_dir)

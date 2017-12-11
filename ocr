@@ -50,7 +50,7 @@ def main():
 
         # Train if we have a training directory
         if formatted_dir:
-            my_ann.backpropagate(formatted_dir)
+            my_ann.backpropagate()
             my_ann.save(args.save)
         # Classify if we have a read directory
         if args.read:
