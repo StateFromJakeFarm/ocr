@@ -29,6 +29,8 @@ def main():
         help='number of training iterations to run on the training images')
     parser.add_argument('-r', '--read', type=str, default=None,
         help='directory containing images to be OCR\'d by ANN')
+    parser.add_argument('-c', '--check', type=int, default=20,
+        help='read images in our testing set after a regular interval of training iterations (default is 20)')
     args = parser.parse_args()
 
     # Format the images for the ANN
@@ -45,7 +47,7 @@ def main():
                 create_formatted(args.train_dir, formatted_dir, args.dimension)
 
         # Construct the OCR ANN
-        my_ann = ANN(formatted_dir, args.read, args.load, args.alpha, args.iters)
+        my_ann = ANN(formatted_dir, args.read, args.load, args.alpha, args.iters, args.check)
         my_ann.build()
 
         # Train if we have a training directory

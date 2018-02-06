@@ -18,13 +18,14 @@ class ANN:
             """Assign the Neuron its weights"""
             self.weights = [float(w) for w in weights_line.strip(' ').split(' ')]
 
-    def __init__(self, train_dir, read_dir, structure_file, alpha, iters):
+    def __init__(self, train_dir, read_dir, structure_file, alpha, iters, check):
         """Constructor simply sets meta member variables"""
         self.train_dir = train_dir
         self.read_dir = read_dir
         self.structure_file = structure_file
         self.alpha = alpha
         self.iters = iters
+        self.check = check
         self.encodings = {}
 
         # Members set internally
@@ -207,6 +208,7 @@ class ANN:
         for k in range(self.iters):
             # Randomize input order
             print('Training Iteration: ' + str(k+1) + ' / ' + str(self.iters), end='\r')
+
             random.shuffle(all_files)
             for i, img_file in enumerate(all_files):
                 # Calculate activation values for all neurons
@@ -242,6 +244,11 @@ class ANN:
                     l += 1
                     for w, current_neuron in enumerate(current_layer):
                         self.layers[0][0].weights[l][w] = self.layers[0][0].weights[l][w] + self.alpha * dummy_activation * current_neuron.err
+
+            # Check our progress by reading the testing images at regular intervals
+            if self.read_dir and (k+1) % self.check == 0 and k+1 < self.iters:
+                print()
+                self.read()
 
         # Clear terminal line
         print()
