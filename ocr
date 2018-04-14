@@ -26,7 +26,7 @@ def main():
     parser.add_argument('-a', '--alpha', type=float, default=0.001,
         help='the alpha value for error propagation')
     parser.add_argument('-i', '--iters', type=int, default=200,
-        help='number of training iterations to run on the training images')
+        help='number of training iterations to run on the training images (default is 200)')
     parser.add_argument('-r', '--read', type=str, default=None,
         help='directory containing images to be OCR\'d by ANN')
     parser.add_argument('-c', '--check', type=int, default=20,
