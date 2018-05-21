@@ -14,30 +14,30 @@ Denote the number of requested neurons in each layer of the network as an intege
 Feel free to play around with different network configurations, just know that adding more layers means longer training time.
 
 ## Step 2: Train the network
-Now comes the time to make our dream network a reality!  Training images have been included in this repository thanks to [this dope dataset](http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/) in PNG format in the training/trainingPNGs/ directory.  Note that the training/justCapsPNGs/ and training/justLowersPNGs/ directories simply contain subsets of the original dataset.  For our example, we will be training our network to identify capital letters with the following command:
+Now comes the time to make our dream network a reality!  Training images have been included in this repository thanks to [this dope dataset](http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/) in PNG format in the training/trainingPNGs/ directory.  Note that the training/only_caps/ and training/justLowersPNGs/ directories simply contain subsets of the original dataset.  For our example, we will be training our network to identify capital letters with the following command:
 ```
-$ ./ocr -l my_first_net.ann -t training/justCapsPNGs/ -d 10 -i 300 -s my_first_net.ann
+$ ./ocr -l my_first_net.ann -t training/only_caps/ -d 10 -i 500 -s my_first_net.ann
 ```
 
 * **-l** loads the network structure from a file (my_first_net.ann)
-* **-t** specifies the images directory on which to train the network (training/justCapsPNGs/)
+* **-t** specifies the images directory on which to train the network (training/only_caps/)
 * **-d** sets the dimension to which the images shall be converted (all images squished to 10x10 squares)
-* **-i** sets the number of training iterations (300)
+* **-i** sets the number of training iterations (500)
 * **-s** defines the path to the file to contain the trained network (we use my_first_net.ann again here, though another file could be used)
 
 See the help text (```./ocr -h```) to see all supported command-line arguments.
 
-The program will then set about creating the training/justCapsPNGs/justCapsPNGsFormatted/ directory where it will dump all of the formatted training images:
+The program will then set about creating the training/only_caps/only_capsFormatted/ directory where it will dump all of the formatted training images:
 ```
-training/justCapsPNGs/I/img019-027.png --(10x10)-> training/justCapsPNGsFormatted/I53.bmp
-training/justCapsPNGs/I/img019-044.png --(10x10)-> training/justCapsPNGsFormatted/I54.bmp
-training/justCapsPNGs/U/img031-050.png --(10x10)-> training/justCapsPNGsFormatted/U0.bmp
+training/only_caps/I/img019-027.png --(10x10)-> training/only_capsFormatted/I53.bmp
+training/only_caps/I/img019-044.png --(10x10)-> training/only_capsFormatted/I54.bmp
+training/only_caps/U/img031-050.png --(10x10)-> training/only_capsFormatted/U0.bmp
 ```
 
 Once all of the images have been prepared, training will commence!  Go be productive while you wait for it to finish:
 ```
 Training images prepared
-Training Iteration: 67 / 300
+Training Iteration: 67 / 500
 ```
 
 ## Step 3: Test the network
@@ -57,3 +57,6 @@ It's something at least!
 <br>
 <br>
 Try making your own network and giving it your own images to read!
+<br>
+<br>
+**NOTE:** The commit history for this repo is revolting, sorry.
