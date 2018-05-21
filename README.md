@@ -74,7 +74,7 @@ readable/words_upper/HELLO.png says: HELLO
 It's something at least!
 <br>
 <br>
-Try making your own, more complex network with more hidden layers to improve performance.  Some example nets are provided in the saved_anns/ directory.
+Try making your own, more complex network with more hidden layers to improve performance.  Some example nets are provided in the ```saved_anns/``` directory.
 <br>
 <br>
 **NOTE:** The commit history for this repo is revolting, sorry.
