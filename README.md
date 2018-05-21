@@ -51,12 +51,30 @@ $ ./ocr -l my_first_net.ann -r readable/words_upper/
 
 Some testing images are provided in the readable/ directory.  In our example, we trained only on upper-case letters, so we'll read from the readable/words_upper/ bucket.  Here's how our network performed:
 ```
+readable/words_upper/SOUNDS.png says: SOUNOS
+readable/words_upper/TRUMP(Ryan E).png says: TTLMT
+readable/words_upper/JAKEISCOOL.png says: UAKEISLOOL
+readable/words_upper/MYNAMEISJ.png says: MYNAMEJSJ
+readable/words_upper/LENAISKEWL(lena).png says: LENAIZKFWL
+readable/words_upper/HECKA(Sean).png says: NECKM
+readable/words_upper/MEMELORD(will).png says: MFMLLORD
+readable/words_upper/FART(katie).png says: FART
+readable/words_upper/ERIKA.png says: EMAKA
+readable/words_upper/REALLYBRUH.png says: REALLYPQUH
+readable/words_upper/AZL.png says: AZL
+readable/words_upper/DANKME(ryan).png says: UANKME
+readable/words_upper/ACTUAL.png says: ACTLAL
+readable/words_upper/HEYMYNAME.png says: HEYMYUAME
+readable/words_upper/BUTTHOLE(emma).png says: PUTTHOLE
+readable/words_upper/ALLY(Anastasia).png says: MLLY
+readable/words_upper/OKAY.png says: OKAY
+readable/words_upper/HELLO.png says: HELLO
 ```
 
 It's something at least!
 <br>
 <br>
-Try making your own network and giving it your own images to read!
+Try making your own, more complex network with more hidden layers to improve performance.  Some example nets are provided in the saved_anns/ directory.
 <br>
 <br>
 **NOTE:** The commit history for this repo is revolting, sorry.
