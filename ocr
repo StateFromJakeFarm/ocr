@@ -17,7 +17,7 @@ def main():
         help='side length of images to be fed to network (default is 10)')
     parser.add_argument('-k', '--keep', action='store_true', default=False,
         help='flag to keep converted training/testing images (default is False)')
-    parser.add_argument('-n', '--new', action='store_true',
+    parser.add_argument('-n', '--new', action='store_true', default=False,
         help='flag to set whether or not to remake all the formatted images for a training directory if it already exists (default is False)')
     parser.add_argument('-l', '--load', type=str, default=None,
         help='file containing saved ANN or simply the structure to be trained')
@@ -31,6 +31,8 @@ def main():
         help='directory containing images to be OCR\'d by ANN')
     parser.add_argument('-c', '--check', type=int, default=20,
         help='read images in our testing set after a regular interval of training iterations (default is 20)')
+    parser.add_argument('-p', '--plaintext', action='store_true', default=False,
+        help='store formatted training images as plaintext rather than bitmaps (default is False)')
     args = parser.parse_args()
 
     # Format the images for the ANN
@@ -44,7 +46,7 @@ def main():
             if args.new or not os.path.isdir(formatted_dir):
                 if os.path.isdir(formatted_dir):
                     shutil.rmtree(formatted_dir)
-                create_formatted(args.train_dir, formatted_dir, args.dimension)
+                create_formatted(args.train_dir, formatted_dir, args.dimension, args.plaintext)
 
         # Construct the OCR ANN
         my_ann = ANN(formatted_dir, args.read, args.load, args.alpha, args.iters, args.check)

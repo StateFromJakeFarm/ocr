@@ -65,7 +65,7 @@ def get_char_bounds(img, high_lo=None):
 
     return bounds
 
-def char_resize_square(path, new_path, side_len, high_lo=None):
+def char_resize_square(path, new_path, side_len, high_lo=None, plaintext=False):
     """Crop image to character and save as square bitmap"""
     img = None
     if type(path) is str:
@@ -81,7 +81,14 @@ def char_resize_square(path, new_path, side_len, high_lo=None):
         return
 
     img = img.crop(tuple(bounds)).resize((side_len,side_len), Image.LANCZOS)
-    img.convert('RGB').save(new_path)
+
+    if plaintext:
+        # Save as plaintext
+        with open(new_path, 'w+') as f:
+            f.write(' '.join([str(x) for x in list(img.getdata())]))
+    else:
+        # Save as BMP
+        img.convert('RGB').save(new_path)
 
 def char_resize_area(path, new_path, area, high_lo=None):
     """Crop image to character and save as bitmap with certain area and same width/height ratio"""
@@ -115,7 +122,7 @@ def char_resize_area(path, new_path, area, high_lo=None):
     img = img.crop(tuple(bounds)).resize((new_x, new_y), Image.LANCZOS)
     img.convert('RGB').save(new_path)
 
-def create_formatted(raw_folder, bmp_folder, side_len):
+def create_formatted(raw_folder, bmp_folder, side_len, plaintext):
     """Convert images of characters to properly-formatted images"""
     clear_folder(bmp_folder)
 
@@ -123,9 +130,9 @@ def create_formatted(raw_folder, bmp_folder, side_len):
         i = 0
         for f in listdir(os.path.join(raw_folder, char)):
             raw_path = os.path.join(raw_folder, char, f)
-            bmp_path = os.path.join(bmp_folder, char+str(i)+'.bmp')
-            print(raw_path + ' --(' + str(side_len) + 'x' + str(side_len) + ')-> ' + bmp_path)
-            char_resize_square(raw_path, bmp_path, side_len)
+            formatted_path = os.path.join(bmp_folder, char+str(i) + ('.txt' if plaintext else '.bmp'))
+            print(raw_path + ' --(' + str(side_len) + 'x' + str(side_len) + ')-> ' + formatted_path)
+            char_resize_square(raw_path, formatted_path, side_len, plaintext=plaintext)
             i += 1
 
     print('Training images prepared')
@@ -166,7 +173,15 @@ def find_chars(raw_path, found_folder, area, high_lo=50):
             bounds = [-1,0,img_x,img_y]
 
 def get_grayscale_vals(img_file_path):
-    img = Image.open(img_file_path).convert('L')
-    grayscale_vals = [int(x) for x in list(img.getdata())]
-    img.close()
+    grayscale_vals = []
+    if img_file_path.split('.')[-1] == 'txt':
+        # Read as text
+        with open(img_file_path, 'r') as f:
+            grayscale_vals = [int(x) for x in f.readline().split()]
+    else:
+        # Read as BMP
+        img = Image.open(img_file_path).convert('L')
+        grayscale_vals = [int(x) for x in list(img.getdata())]
+        img.close()
+
     return grayscale_vals
