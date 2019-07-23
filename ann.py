@@ -148,7 +148,7 @@ class ANN:
                 self.encodings[char].append(val)
 
     def activation(self, in_sum):
-        """Activation function"""
+        """Sigmoid function"""
         return 1.0 / (1 + math.exp(-1*in_sum))
 
     def calc_activations(self, img_file_path):
@@ -259,7 +259,7 @@ class ANN:
             string_img_file = os.path.join(self.read_dir.strip('\/'), string_img_file)
 
             # Create directory to hold all the characters we find in this image
-            found_chars_dir = string_img_file + 'found_chars'
+            found_chars_dir = string_img_file + '_found_chars'
             find_chars(string_img_file, found_chars_dir, int(math.sqrt(len(self.layers[1]))))
 
             # Classify each character we find in the image
